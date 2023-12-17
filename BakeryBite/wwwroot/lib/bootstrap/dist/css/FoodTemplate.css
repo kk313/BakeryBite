@@ -1,0 +1,60 @@
+﻿.grid-container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 10px;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.sorter {
+    display: flex;
+}
+
+.start {
+    margin-left: 25px;
+    font-size: 37px;
+}
+
+form {
+    position: relative;
+    top: 20px;
+    left: 10px;
+}
+
+.custom-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    width: 50px;
+    height: 50px;
+}
+
+    .custom-button img {
+        width: 100%; 
+        height: 100%; 
+    }
+
+.base {
+    width: 250px;
+    height: 275px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: #D9D9D9;
+    margin: 15px;
+}
+
+.image {
+    width: 230px;
+    height: 98px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: #5C4343;
+    margin: 10px;
+}

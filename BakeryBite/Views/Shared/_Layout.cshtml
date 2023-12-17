@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BakeryBite</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/Design.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/Styles.css" />
+    <link rel="stylesheet" href="~/js/site.js" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" />
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a asp-area="" asp-controller="Home" asp-action="Food1">Выпечка</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Food2">Напитки</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Food3">Булочки</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Food4">Сендвичи</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Food5">Торты</a></li>
+                <li><a asp-area="" asp-controller="Home" asp-action="Food6">Хлеба</a></li>
+            </ul>
+        </nav>
+        <nav>
+            <ul>
+                <li>
+                    <div class="icon">
+                        <form asp-controller="Home" asp-action="Food2" method="get">
+                            <button type="submit" class="ucion">
+                                <img src="~/img/User.svg" alt="Изображение">
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                <li>
+                    <div class="icon">
+                        <form asp-controller="Home" asp-action="Food1" method="get">
+                            <button type="submit" class="ucion">
+                                <img src="~/img/Cart.svg" alt="Изображение">
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container footer-left">
+            &copy; 2023 - BakeryBite
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
