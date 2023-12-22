@@ -79,7 +79,7 @@ footer {
 }
 
 .icon {
-    display: flex;
+    align-content: center;
 }
 
 .ucion {
