@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BakeryBite</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/Design.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/Styles.css" />
-    <link rel="stylesheet" href="~/js/site.js" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" />
 </head>
 <body>
@@ -24,8 +22,8 @@
         <nav>
             <ul>
                 <li>
-                    <div class="icon">
-                        <form asp-controller="Home" asp-action="Food2" method="get">
+                    <div>
+                        <form asp-controller="Home" asp-action="Food2" method="get" class="icon">
                             <button type="submit" class="ucion">
                                 <img src="~/img/User.svg" alt="Изображение">
                             </button>
@@ -33,8 +31,8 @@
                     </div>
                 </li>
                 <li>
-                    <div class="icon">
-                        <form asp-controller="Home" asp-action="Food1" method="get">
+                    <div>
+                        <form asp-controller="Home" asp-action="Food1" method="get" class="icon">
                             <button type="submit" class="ucion">
                                 <img src="~/img/Cart.svg" alt="Изображение">
                             </button>
@@ -52,9 +50,13 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer>
         <div class="container footer-left">
             &copy; 2023 - BakeryBite
+        </div>
+
+        <div id="centered-div">
+            вц йвцййцввцй
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
