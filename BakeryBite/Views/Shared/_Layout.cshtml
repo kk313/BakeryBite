@@ -23,7 +23,7 @@
             <ul>
                 <li>
                     <div>
-                        <form asp-controller="Home" asp-action="Food2" method="get" class="icon">
+                        <form asp-controller="Home" asp-action="Authorize" method="get" class="icon">
                             <button type="submit" class="ucion">
                                 <img src="~/img/User.svg" alt="Изображение">
                             </button>
@@ -53,6 +53,13 @@
     <footer>
         <div class="container footer-left">
             &copy; 2023 - BakeryBite
+        </div>
+        <div class="footer-center">
+            <a asp-area="" asp-controller="Sections" asp-action="FAQ"></a>
+            <a asp-area="" asp-controller="Sections" asp-action="PublicOffer"></a>
+            <a asp-area="" asp-controller="Sections" asp-action="PrivacyPolicy"></a>
+            <a asp-area="" asp-controller="Sections" asp-action="AboutUs"></a>
+            <a asp-area="" asp-controller="Sections" asp-action="Contacts">Контакты</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

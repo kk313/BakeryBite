@@ -14,9 +14,6 @@ namespace BakeryBite.Controllers
             _logger = logger;
             //_context = context;
         }
-
-        public IActionResult Index() => View();
-
         //public IActionResult Food1()
         //{
         //    var foodItems = _context.Item
@@ -26,12 +23,14 @@ namespace BakeryBite.Controllers
         //    return View(foodItems);
         //}
 
+        public IActionResult Index() => View();
         public IActionResult Food1() => View();
         public IActionResult Food2() => View();
         public IActionResult Food3() => View();
         public IActionResult Food4() => View();
         public IActionResult Food5() => View();
         public IActionResult Food6() => View();
+        public IActionResult Authorize() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
