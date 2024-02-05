@@ -9,11 +9,12 @@ namespace BakeryBite.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationContext _context;
 
-        public HomeController(ILogger<HomeController> logger/*, ApplicationContext context*/)
+        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
         {
             _logger = logger;
-            //_context = context;
+            _context = context;
         }
+
         //public IActionResult Food1()
         //{
         //    var foodItems = _context.Item

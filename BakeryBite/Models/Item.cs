@@ -10,17 +10,5 @@
         public string Avatar { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-
-        public Item (int id, string name, decimal weight, decimal cost, string description, string avatar, int categoryId, Category category)
-        {
-            Id = id;
-            Name = name;
-            Weight = weight;
-            Cost = cost;
-            Description = description;
-            Avatar = avatar;
-            CategoryId = categoryId;
-            Category = category;
-        }
     }
 }
