@@ -16,6 +16,10 @@ namespace BakeryBite.Controllers
         }
 
         public IActionResult Contacts() => View();
+        public IActionResult AboutUs() => View();
+        public IActionResult FAQ() => View();
+        public IActionResult PrivacyPolicy() => View();
+        public IActionResult PublicOffer() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

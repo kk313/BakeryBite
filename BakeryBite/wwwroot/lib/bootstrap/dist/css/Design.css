@@ -1,11 +1,4 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    flex-direction: column;
-    min-height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-}
+﻿/*header*/
 
 header {
     background-color: #fff;
@@ -42,16 +35,14 @@ nav {
                 transition: color 0.5s, filter 0.5s;
             }
 
-a.active, a:hover {
-    color: wheat;
-    transition: .5s;
-    filter: brightness(0.9);
-}
-
-.container {
-    max-width: 1600px; 
-    margin: 0 auto; 
-    padding: 20px;
+/*body*/
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif;
 }
 
 main {
@@ -60,6 +51,13 @@ main {
     min-height: calc(100vh - 120px);
 }
 
+.container {
+    max-width: 1600px; 
+    margin: 0 auto; 
+    padding: 20px;
+}
+
+/*footer*/
 footer {
     border-top: 1px solid #ddd;
     padding: 8px;
@@ -94,6 +92,7 @@ footer {
         transition: color 0.5s, filter 0.5s;
     }
 
+/*addiction*/
 .icon {
     align-content: center;
 }
@@ -116,3 +115,8 @@ footer {
         cursor: pointer;
     }
 
+a.active, a:hover {
+    color: wheat;
+    transition: .5s;
+    filter: brightness(0.9);
+}
