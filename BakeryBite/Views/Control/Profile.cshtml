@@ -2,5 +2,37 @@
     ViewData["Title"] = "Профиль";
     Layout = "_LayoutSecond";
 }
+@model BakeryBite.Data.LoginViewModel
 
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/Authorize.css" />
+<link rel="stylesheet" href="~/css/Profile.css" />
+
+<main>
+    <div class="profile-container">
+        <div class="profile-grid">
+            <div class="avatar">
+                <h2>Профиль пользователя</h2>
+                <img alt="Аватар пользователя" class="avatar-img">
+            </div>
+            <div class="user-info">
+                <p><strong>Имя пользователя:</strong> @Model.UserName</p>
+                <p><strong>Роль пользователя:</strong> @Model.UserRole</p>
+            </div>
+            <div class="action-buttons">
+                @if (Model.UserRole == "Администратор")
+                {
+                    <button type="button" class="btn btn-primary">Действие 1</button>
+                }
+                @if (Model.UserRole == "Администратор" || Model.UserRole == "Менеджер Товаров")
+                {
+                    <button type="button" class="btn btn-primary">Действие 2</button>
+                }
+                @if (Model.UserRole == "Администратор" || Model.UserRole == "Менеджер Заказов")
+                {
+                    <button type="button" class="btn btn-primary">Действие 3</button>
+                }
+                <a href="@Url.Action("Logout", "Control")" class="btn btn-danger">Выход</a>
+            </div>
+        </div>
+    </div>
+</main>
+

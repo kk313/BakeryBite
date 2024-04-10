@@ -1,0 +1,34 @@
+﻿.profile-container {
+    padding: 20px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.avatar {
+    grid-column: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-info {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.action-buttons {
+    grid-column: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Определите стили для кнопок и других элементов по желанию */
+.btn {
+    margin-bottom: 10px;
+}

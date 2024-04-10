@@ -31,7 +31,8 @@ namespace BakeryBite
 
 		public ApplicationContext()
 		{
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
+            //Database.EnsureDeleted();
         }
-	}
+    }
 }

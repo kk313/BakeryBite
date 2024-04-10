@@ -70,13 +70,12 @@ namespace BakeryBite.Controllers
 
         public IActionResult Authorize()
         {
-            if (HttpContext.Session.GetString("UserId") != null)
+            if (HttpContext.Session.GetString("UserName") != null)
             {
                 return RedirectToAction("Profile", "Control");
             }
             return View();
         }
-
 
         [HttpPost]
         public IActionResult Login(string userName, string password)
@@ -89,7 +88,7 @@ namespace BakeryBite.Controllers
                 return View("Authorize");
             }
 
-            HttpContext.Session.SetString("UserId", user.Id.ToString());
+            HttpContext.Session.SetString("UserName", user.Name.ToString());
             HttpContext.Session.SetString("UserRole", user.RoleId.ToString());
 
             return RedirectToAction("Profile", "Control");

@@ -16,13 +16,11 @@
                 <div class="form-group">
                     <label for="loginInput">Логин</label>
                     <input type="text" class="form-control" id="loginInput" name="UserName" placeholder="Введите ваш логин">
-                    <span class="text-error">@Html.ValidationMessageFor(model => model.UserName)</span>
                 </div>
 
                 <div class="form-group">
                     <label for="passwordInput">Пароль</label>
                     <input type="password" class="form-control" id="passwordInput" name="Password" placeholder="Введите ваш пароль">
-                    <span class="text-error">@Html.ValidationMessageFor(model => model.Password)</span>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Вход</button>
