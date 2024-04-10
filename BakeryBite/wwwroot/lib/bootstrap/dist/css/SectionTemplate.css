@@ -27,8 +27,10 @@
 
 .grid-item-11 {
     display: flex;
-    flex-direction: row;
-    align-content: flex-start;
+    flex-direction: column; /* Расположение элементов в столбец */
+    align-items: flex-start; /* Выравнивание по левому краю */
+    justify-content: flex-start; /* Выравнивание сверху */
+    gap: 20px; /* Отступ между элементами внутри grid-item-11 */
 }
 
 .grid-item2 {

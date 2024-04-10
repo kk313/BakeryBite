@@ -1,5 +1,8 @@
 ﻿using BakeryBite.Models;
+using BakeryBite.Data;
+
 using Microsoft.AspNetCore.Mvc;
+
 using System.Diagnostics;
 
 namespace BakeryBite.Controllers
@@ -15,23 +18,82 @@ namespace BakeryBite.Controllers
             _context = context;
         }
 
-        //public IActionResult Food1()
-        //{
-        //    var foodItems = _context.Item
-        //.Where(item => item.CategoryId == 1)
-        //.ToList();
-
-        //    return View(foodItems);
-        //}
-
         public IActionResult Index() => View();
-        public IActionResult Food1() => View();
-        public IActionResult Food2() => View();
-        public IActionResult Food3() => View();
-        public IActionResult Food4() => View();
-        public IActionResult Food5() => View();
-        public IActionResult Food6() => View();
-        public IActionResult Authorize() => View();
+
+        public IActionResult Food1()
+        {
+            var foodItems = _context.Product
+            .Where(p => p.CategoryId == 1)
+            .ToList();
+            return View(foodItems);
+        }
+
+        public IActionResult Food2()
+        {
+            var foodItems = _context.Product
+            .Where(p => p.CategoryId == 2)
+            .ToList();
+            return View(foodItems);
+        }
+
+        public IActionResult Food3()
+        {
+            var foodItems = _context.Product
+            .Where(p => p.CategoryId == 3)
+            .ToList();
+            return View(foodItems);
+        }
+
+        public IActionResult Food4()
+        {
+            var foodItems = _context.Product
+            .Where(p => p.CategoryId == 4)
+            .ToList();
+            return View(foodItems);
+        }
+
+        public IActionResult Food5()
+        {
+            var foodItems = _context.Product
+            .Where(p => p.CategoryId == 5)
+            .ToList();
+            return View(foodItems);
+        }
+
+        public IActionResult Food6()
+        {
+            var foodItems = _context.Product
+            .Where(p => p.CategoryId == 6)
+            .ToList();
+            return View(foodItems);
+        }
+
+        public IActionResult Authorize()
+        {
+            if (HttpContext.Session.GetString("UserId") != null)
+            {
+                return RedirectToAction("Profile", "Control");
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult Login(string userName, string password)
+        {
+            var user = _context.User.FirstOrDefault(u => u.Login == userName && u.Password == password);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Неверные учетные данные");
+                return View("Authorize");
+            }
+
+            HttpContext.Session.SetString("UserId", user.Id.ToString());
+            HttpContext.Session.SetString("UserRole", user.RoleId.ToString());
+
+            return RedirectToAction("Profile", "Control");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

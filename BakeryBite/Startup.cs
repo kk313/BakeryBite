@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using BakeryBite;
+
 using Microsoft.EntityFrameworkCore;
-using BakeryBite.Models;
-using BakeryBite;
 
 public class Startup
 {
@@ -18,12 +13,14 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddDistributedMemoryCache();
+        services.AddSession();
+
         services.AddDbContext<ApplicationContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
         services.AddControllersWithViews();
     }
-
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
@@ -41,6 +38,8 @@ public class Startup
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseSession();
 
         app.UseEndpoints(endpoints =>
         {

@@ -1,7 +1,42 @@
 ﻿@{
-    ViewData["Title"] = "Выпечка";
+    ViewData["Title"] = "Напитки";
 }
+@model List<Product>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodTemplate.css" />
 
-<h1>@ViewData["Title"]</h1>
+<main class="grid-container">
+    <div class="grid-item" style="align-items: center">
+        <form asp-controller="Home" asp-action="Index" method="get">
+            <button type="submit" class="custom-button" id="icon">
+                <img src="~/img/Subtract.svg" alt="Изображение">
+            </button>
+        </form>
 
-<p>Use this page to detail your site's privacy policy.</p>
+        <h1 class="start">Напитки</h1>
+    </div>
+    <div class="grid-item">
+        @if (Model.Any())
+        {
+            @foreach (var product in Model)
+            {
+                <div class="base">
+                    <div class="image">
+                        <img class="product-img" src="data:image/png;base64,@product.Avatar" alt="@product.Name">
+                    </div>
+                    <div class="text">
+                        <p class="product-name">@product.Name</p>
+                        <p class="product-weight">@(Math.Round(product.Weight / 1000, 2)) кг</p>
+                        <p class="product-detail">@product.Description</p>
+                        <p class="product-price">@product.Cost руб.</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="grid-item-2">
+                <h2>Извините, товаров этой категории сейчас не наблюдается!</h2>
+            </div>
+        }
+    </div>
+</main>

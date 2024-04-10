@@ -1,7 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Выпечка";
+    ViewData["Title"] = "Хлеб";
 }
-@* @Model List<foodItems> *@
+@model List<Product>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodTemplate.css" />
 
 <main class="grid-container">
@@ -12,44 +12,31 @@
             </button>
         </form>
 
-        <h1 class="start">Выпечка</h1>
+        <h1 class="start">Хлеб</h1>
     </div>
     <div class="grid-item">
-        <div class="base">
-            <div class="image">
+        @if (Model.Any())
+        {
+            @foreach (var product in Model)
+            {
+                <div class="base">
+                    <div class="image">
+                        <img class="product-img" src="data:image/png;base64,@product.Avatar" alt="">
+                    </div>
+                    <div class="text">
+                        <p class="product-name">@product.Name</p>
+                        <p class="product-weight">@(Math.Round(product.Weight / 1000, 2)) кг</p>
+                        <p class="product-detail">@product.Description</p>
+                    </div>
+                    <p class="product-price">@product.Cost руб.</p>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="grid-item-2">
+                <h2>Извините, товаров этой категории сейчас не наблюдается!</h2>
             </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
-        <div class="base">
-            <div class="image">
-            </div>
-        </div>
+        }
     </div>
 </main>
