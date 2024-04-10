@@ -6,8 +6,7 @@ namespace BakeryBite
 {
     public class ApplicationContext : DbContext
     {
-        //private readonly string _connection = "Data Source=DESKTOP-4PAD45N\\SQLEXPRESS;Initial Catalog=BakeryBite;Integrated Security=True";
-        private readonly string _connection = "";
+		private readonly string _connection = "Data Source=192.168.221.12;User ID = user04;Password=04;Database=BakeryBite;TrustServerCertificate=true";
 
         public DbSet<User> Users { get; set; }
         public DbSet<Item> Item { get; set; }
@@ -24,7 +23,12 @@ namespace BakeryBite
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer(_connection);
+            optionsBuilder.UseSqlServer(_connection);
         }
-    }
+
+		public ApplicationContext()
+		{
+            Database.EnsureCreated();
+        }
+	}
 }

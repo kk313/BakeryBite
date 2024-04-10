@@ -11,10 +11,6 @@
     align-content: flex-start;
 }
 
-.sorter {
-    display: flex;
-}
-
 .start {
     margin-left: 25px;
     font-size: 37px;
@@ -38,6 +34,10 @@ form {
     .custom-button img {
         width: 100%; 
         height: 100%; 
+    }
+
+    .custom-button:hover {
+        cursor: pointer;
     }
 
 .base {

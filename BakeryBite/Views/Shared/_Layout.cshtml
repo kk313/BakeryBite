@@ -23,7 +23,7 @@
             <ul>
                 <li>
                     <div>
-                        <form asp-controller="Home" asp-action="Food2" method="get" class="icon">
+                        <form asp-controller="Home" asp-action="Authorize" method="get" class="icon">
                             <button type="submit" class="ucion">
                                 <img src="~/img/User.svg" alt="Изображение">
                             </button>
@@ -54,9 +54,12 @@
         <div class="container footer-left">
             &copy; 2023 - BakeryBite
         </div>
-
-        <div class="container footer-center">
-
+        <div class="footer-center">
+            <a asp-area="" asp-controller="Sections" asp-action="FAQ">Часто задаваемые вопросы</a>
+            <a asp-area="" asp-controller="Sections" asp-action="PublicOffer">Публичная оферта</a>
+            <a asp-area="" asp-controller="Sections" asp-action="PrivacyPolicy">Политика конфиденциальности</a>
+            <a asp-area="" asp-controller="Sections" asp-action="AboutUs">О нас</a>
+            <a asp-area="" asp-controller="Sections" asp-action="Contacts">Контакты</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

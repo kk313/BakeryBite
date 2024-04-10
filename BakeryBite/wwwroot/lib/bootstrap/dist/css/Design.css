@@ -1,11 +1,4 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    flex-direction: column;
-    min-height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-}
+﻿/*header*/
 
 header {
     background-color: #fff;
@@ -42,17 +35,14 @@ nav {
                 transition: color 0.5s, filter 0.5s;
             }
 
-a.active, a:hover {
-    color: wheat;
-    transition: .5s;
-    filter: brightness(0.9);
-}
-
-.container {
-    flex: 1;
-    max-width: 1600px; 
-    margin: 0 auto; 
-    padding: 20px;
+/*body*/
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif;
 }
 
 main {
@@ -61,6 +51,13 @@ main {
     min-height: calc(100vh - 120px);
 }
 
+.container {
+    max-width: 1600px; 
+    margin: 0 auto; 
+    padding: 20px;
+}
+
+/*footer*/
 footer {
     display: flex;
     justify-content: space-between;
@@ -70,22 +67,35 @@ footer {
     text-align: center;
     color: #888;
     width: 100%;
-    height: 40px;
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    align-items: center;
     box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .footer-left {
-    margin-right: auto;
-    display: flex;
+    grid-column: 1;
+    align-self: end;
 }
 
 .footer-center {
-    display: flex;
+    grid-column 2;
     flex-direction: column;
-    justify-content: center;
+    display: flex;
+    justify-content: start;
     align-items: center;
 }
 
+    .footer-center a {
+        margin: 5px;
+        text-align: left;
+        color: black;
+        font-size: 20px;
+        text-decoration: none;
+        transition: color 0.5s, filter 0.5s;
+    }
+
+/*addiction*/
 .icon {
     align-content: center;
 }
@@ -104,7 +114,12 @@ footer {
         margin-right: 10px;
     }
 
-.ucion:hover {
-    cursor: pointer;
-}
+    .ucion:hover {
+        cursor: pointer;
+    }
 
+a.active, a:hover {
+    color: wheat;
+    transition: .5s;
+    filter: brightness(0.9);
+}

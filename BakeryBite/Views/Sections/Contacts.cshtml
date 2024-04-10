@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Контакты";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/SectionTemplate.css" />
+
+<main class="grid-container-1">
+    <div class="grid-item-1" style="align-items: center">
+        <form asp-controller="Home" asp-action="Index" method="get">
+            <button type="submit" class="custom-button-1">
+                <img src="~/img/Subtract.svg" alt="Изображение">
+            </button>
+        </form>
+
+        <h1 class="start-1">Контакты</h1>
+    </div>
+
+    <div class="grid-item-2">
+        <h2>Будем рады ответить на ваши вопросы!</h2>
+        <h3>ул. Смоляной пер., 2</h3>
+        <h4>8 (851) 254-08-35</h4>
+    </div>    
+</main>

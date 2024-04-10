@@ -9,13 +9,11 @@ namespace BakeryBite.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationContext _context;
 
-        public HomeController(ILogger<HomeController> logger/*, ApplicationContext context*/)
+        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
         {
             _logger = logger;
-            //_context = context;
+            _context = context;
         }
-
-        public IActionResult Index() => View();
 
         //public IActionResult Food1()
         //{
@@ -26,12 +24,14 @@ namespace BakeryBite.Controllers
         //    return View(foodItems);
         //}
 
+        public IActionResult Index() => View();
         public IActionResult Food1() => View();
         public IActionResult Food2() => View();
         public IActionResult Food3() => View();
         public IActionResult Food4() => View();
         public IActionResult Food5() => View();
         public IActionResult Food6() => View();
+        public IActionResult Authorize() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
