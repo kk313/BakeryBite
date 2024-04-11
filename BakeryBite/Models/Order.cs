@@ -3,11 +3,10 @@
     public class Order
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
-        public int CartId { get; set; }
-        public ShoppingCart ShoppingCart { get; set; }
-        public bool IsConfirmed { get; set; }
-        public bool IsRejected { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal TotalAmount { get; set; }
+        public bool IsCompleted { get; set; }
+        public int Phone { get; set; }
+        public string Address { get; set; }
     }
 }

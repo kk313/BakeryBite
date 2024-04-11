@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Корзина";
+    Layout = "_LayoutSecond";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodEditor.css" />
+@model List<BakeryBite.Models.CartItem>
+
+<h1>Корзина покупок</h1>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Product.Cost руб.</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Quantity * item.Product.Cost) руб.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <p>Общая стоимость: @Model.Sum(item => item.Quantity * item.Product.Cost) руб.</p>
+        <!-- Здесь выводится общая стоимость всех товаров в корзине -->
+    </div>
+
+    <button type="button" class="btn btn-primary">Оформить заказ</button>
+    <!-- Здесь может быть кнопка для оформления заказа -->
+}
+else
+{
+    <p>Ваша корзина пуста</p>
+}

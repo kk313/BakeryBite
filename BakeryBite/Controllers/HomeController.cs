@@ -4,6 +4,8 @@ using BakeryBite.Data;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace BakeryBite.Controllers
 {
@@ -11,11 +13,40 @@ namespace BakeryBite.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationContext _context;
+        private readonly ShoppingCart _shoppingCart;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationContext context, ShoppingCart shoppingCart)
         {
             _logger = logger;
             _context = context;
+            _shoppingCart = shoppingCart;
+        }
+
+        [HttpPost]
+        public IActionResult AddToCart(int productId)
+        {
+            var productToAdd = _context.Product.FirstOrDefault(p => p.Id == productId);
+
+            if (productToAdd != null)
+            {
+                _shoppingCart.AddItem(productToAdd, 1);
+                Console.WriteLine($"Товар добавлен в корзину: {productToAdd.Name}");
+                HttpContext.Session.SetObject("ShoppingCart", _shoppingCart);
+            }
+            return RedirectToAction("ShoppingCart");
+        }
+
+        public IActionResult ShoppingCart()
+        {
+            var shoppingCart = HttpContext.Session.GetObject<ShoppingCart>("ShoppingCart");
+
+            if (shoppingCart == null || shoppingCart.GetItems().Count() == 0)
+            {
+                return View(new List<CartItem>());
+            }
+
+            var itemsInCart = shoppingCart.GetItems().ToList();
+            return View(itemsInCart);
         }
 
         public IActionResult Index() => View();

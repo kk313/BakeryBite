@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Товары";
+    Layout = "_LayoutSecond";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodEditor.css" />
+@model List<BakeryBite.Models.Product>
+
+<h2>Список всех товаров</h2>
+<a asp-controller="Control" asp-action="ProductOneAdder" class="btn btn-primary mb-3">Добавить новый товар</a>
+
+<div class="products-container">
+
+    @foreach (var product in Model)
+    {
+        <div class="product-item">
+            <div class="image">
+                <img class="product-img" src="data:image/png;base64,@product.Avatar" alt="">
+            </div>
+            <div class="details">
+                <p><strong>@product.Name</strong></p>
+                <p>@(Math.Round(product.Weight / 1000, 2)) кг</p>
+                <p>@product.Description</p>
+                <p>@product.Cost руб.</p>
+            </div>
+            <div class="actions">
+                <a href="@Url.Action("ProductOneEditor", "Control", new { productId = product.Id })" class="btn-primary">Редактировать</a>
+            </div>
+        </div>
+    }
+</div>

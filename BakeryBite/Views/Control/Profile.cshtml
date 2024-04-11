@@ -11,28 +11,36 @@
         <div class="profile-grid">
             <div class="avatar">
                 <h2>Профиль пользователя</h2>
-                <img alt="Аватар пользователя" class="avatar-img">
+                <img src="" alt="Аватар пользователя" class="avatar-img">
             </div>
             <div class="user-info">
                 <p><strong>Имя пользователя:</strong> @Model.UserName</p>
                 <p><strong>Роль пользователя:</strong> @Model.UserRole</p>
             </div>
             <div class="action-buttons">
-                @if (Model.UserRole == "Администратор")
-                {
-                    <button type="button" class="btn btn-primary">Действие 1</button>
-                }
                 @if (Model.UserRole == "Администратор" || Model.UserRole == "Менеджер Товаров")
                 {
-                    <button type="button" class="btn btn-primary">Действие 2</button>
+                    <button type="button" class="btn btn-primary" onclick="redirectToProductsEditor()">Товары</button>
                 }
                 @if (Model.UserRole == "Администратор" || Model.UserRole == "Менеджер Заказов")
                 {
-                    <button type="button" class="btn btn-primary">Действие 3</button>
+                    <button type="button" class="btn btn-primary" onclick="redirectToOrderEditor()">Заказы</button>
                 }
                 <a href="@Url.Action("Logout", "Control")" class="btn btn-danger">Выход</a>
             </div>
         </div>
     </div>
 </main>
+
+<script>
+    function redirectToProductsEditor() {
+        var url = '@Url.Action("ProductsEditor", "Control")';
+        window.location.href = url;
+    }
+
+    function redirectToOrderEditor() {
+        var url = '@Url.Action("OrderEditor", "Control")';
+        window.location.href = url;
+    }
+</script>
 

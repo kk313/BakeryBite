@@ -11,7 +11,16 @@
     <header>
         <nav>
             <ul>
-                <li><a asp-area="" asp-controller="Home" asp-action="Index">Домой</a></li>
+                <li>
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Домой</a>
+                </li>
+            </ul>
+        </nav>
+        <nav>
+            <ul>
+                <li>
+                    <a href="javascript:void(0);" onclick="goBack();">Вернуться назад</a>
+                </li>
             </ul>
         </nav>
     </header>
@@ -39,5 +48,11 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>

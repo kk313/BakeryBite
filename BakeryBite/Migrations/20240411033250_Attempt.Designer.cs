@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BakeryBite.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240410133429_First")]
-    partial class First
+    [Migration("20240411033250_Attempt")]
+    partial class Attempt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,32 @@ namespace BakeryBite.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BakeryBite.Models.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShoppingCartId");
+
+                    b.ToTable("CartItem");
+                });
 
             modelBuilder.Entity("BakeryBite.Models.Category", b =>
                 {
@@ -50,18 +76,23 @@ namespace BakeryBite.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsConfirmed")
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsRejected")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("Phone")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Order");
                 });
@@ -92,17 +123,12 @@ namespace BakeryBite.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Weight")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Product");
                 });
@@ -175,15 +201,19 @@ namespace BakeryBite.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("BakeryBite.Models.Order", b =>
+            modelBuilder.Entity("BakeryBite.Models.CartItem", b =>
                 {
-                    b.HasOne("BakeryBite.Models.User", "User")
+                    b.HasOne("BakeryBite.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("BakeryBite.Models.ShoppingCart", null)
+                        .WithMany("CartItems")
+                        .HasForeignKey("ShoppingCartId");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("BakeryBite.Models.Product", b =>
@@ -193,10 +223,6 @@ namespace BakeryBite.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BakeryBite.Models.Order", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderId");
 
                     b.Navigation("Category");
                 });
@@ -212,9 +238,9 @@ namespace BakeryBite.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("BakeryBite.Models.Order", b =>
+            modelBuilder.Entity("BakeryBite.Models.ShoppingCart", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }

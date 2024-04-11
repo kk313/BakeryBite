@@ -1,4 +1,7 @@
 using BakeryBite;
+using BakeryBite.Data;
+using BakeryBite.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +13,16 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ShoppingCart>();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; 
+});
 
 builder.Services.AddSession();
 

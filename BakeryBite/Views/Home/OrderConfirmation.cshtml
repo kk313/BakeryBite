@@ -1,0 +1,11 @@
+﻿@model BakeryBite.Models.Order
+
+<h2>Подтверждение заказа</h2>
+
+<p>Заказ № @Model.Id успешно оформлен.</p>
+<p>Общая сумма заказа: @Model.TotalAmount.ToString("0.00") руб.</p>
+<p>Дата заказа: @Model.OrderDate.ToString("dd.MM.yyyy")</p>
+<p>Контактный телефон: @Model.Phone</p>
+<p>Адрес доставки: @Model.Address</p>
+
+<a href="/">Вернуться на главную страницу</a>

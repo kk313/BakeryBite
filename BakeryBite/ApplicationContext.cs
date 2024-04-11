@@ -15,6 +15,7 @@ namespace BakeryBite
         public DbSet<Category> Category { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Role> Role { get; set; }
+        public DbSet<CartItem> CartItem { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options) { }

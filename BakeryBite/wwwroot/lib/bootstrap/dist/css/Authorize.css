@@ -35,7 +35,7 @@
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        box-sizing: border-box; /* чтобы padding не добавлялся к width */
+        box-sizing: border-box;
     }
 
 .btn-primary {

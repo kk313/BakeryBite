@@ -1,4 +1,6 @@
-﻿namespace BakeryBite.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BakeryBite.Models
 {
     public class Product
     {
