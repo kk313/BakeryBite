@@ -4,28 +4,20 @@
 
 .profile-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
 .avatar {
-    grid-column: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    grid-column: 1 / span 1; /* Занимает первый столбец */
 }
 
 .user-info {
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
+    grid-column: 2 / span 1; /* Занимает второй столбец */
 }
 
 .action-buttons {
-    grid-column: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    grid-column: 3 / span 1; /* Занимает третий столбец */
 }
 
 .btn {

@@ -22,32 +22,32 @@ namespace BakeryBite.Controllers
             _shoppingCart = shoppingCart;
         }
 
-        [HttpPost]
-        public IActionResult AddToCart(int productId)
-        {
-            var productToAdd = _context.Product.FirstOrDefault(p => p.Id == productId);
+        //[HttpPost]
+        //public IActionResult AddToCart(int productId)
+        //{
+        //    var productToAdd = _context.Product.FirstOrDefault(p => p.Id == productId);
 
-            if (productToAdd != null)
-            {
-                _shoppingCart.AddItem(productToAdd, 1);
-                Console.WriteLine($"Товар добавлен в корзину: {productToAdd.Name}");
-                HttpContext.Session.SetObject("ShoppingCart", _shoppingCart);
-            }
-            return RedirectToAction("ShoppingCart");
-        }
+        //    if (productToAdd != null)
+        //    {
+        //        _shoppingCart.AddItem(productToAdd, 1);
+        //        Console.WriteLine($"Товар добавлен в корзину: {productToAdd.Name}");
+        //        HttpContext.Session.SetObject("ShoppingCart", _shoppingCart);
+        //    }
+        //    return RedirectToAction("ShoppingCart");
+        //}
 
-        public IActionResult ShoppingCart()
-        {
-            var shoppingCart = HttpContext.Session.GetObject<ShoppingCart>("ShoppingCart");
+        //public IActionResult ShoppingCart()
+        //{
+        //    var shoppingCart = HttpContext.Session.GetObject<ShoppingCart>("ShoppingCart");
 
-            if (shoppingCart == null || shoppingCart.GetItems().Count() == 0)
-            {
-                return View(new List<CartItem>());
-            }
+        //    if (shoppingCart == null || shoppingCart.GetItems().Count() == 0)
+        //    {
+        //        return View(new List<CartItem>());
+        //    }
 
-            var itemsInCart = shoppingCart.GetItems().ToList();
-            return View(itemsInCart);
-        }
+        //    var itemsInCart = shoppingCart.GetItems().ToList();
+        //    return View(itemsInCart);
+        //}
 
         public IActionResult Index() => View();
 
