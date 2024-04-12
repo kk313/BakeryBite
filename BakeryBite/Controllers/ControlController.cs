@@ -176,6 +176,29 @@ namespace BakeryBite.Controllers
             return RedirectToAction("ProductsEditor");
         }
 
+        [HttpPost]
+        public IActionResult DeleteProduct(int productId)
+        {
+            var product = _context.Product.FirstOrDefault(p => p.Id == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Product.Remove(product);
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errorMessage = "Ошибка при удалении товара: " + ex.Message });
+            }
+        }
+
+
         private bool CheckInput(ProductViewModel viewModel)
         {
             if (string.IsNullOrWhiteSpace(viewModel.Product.Name) ||

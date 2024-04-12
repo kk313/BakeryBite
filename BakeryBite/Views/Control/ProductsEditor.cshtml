@@ -24,7 +24,26 @@
             </div>
             <div class="actions">
                 <a href="@Url.Action("ProductOneEditor", "Control", new { productId = product.Id })" class="btn-primary">Редактировать</a>
+                <a href="#" onclick="confirmDelete(@product.Id)" class="btn-delete">Удалить</a>
             </div>
         </div>
     }
 </div>
+
+<script>
+    function confirmDelete(productId) {
+        if (confirm('Вы уверены, что хотите удалить этот товар?')) {
+            $.ajax({
+                url: '@Url.Action("DeleteProduct", "Control")',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert('Произошла ошибка при удалении товара.');
+                }
+            });
+        }
+    }
+</script>

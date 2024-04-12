@@ -1,4 +1,59 @@
 ﻿<!DOCTYPE html>
+@using BakeryBite.Data
+@inject ApplicationContext DbContext
+
+@{
+    var categoryViewModels = new List<CategoryViewModel>();
+
+    var categoryIds = DbContext.Product.Select(p => p.CategoryId).Distinct().ToList();
+
+    foreach (var categoryId in categoryIds)
+    {
+        string categoryName = $"Food{categoryId}";
+
+        var randomProduct = DbContext.Product
+            .Where(p => p.CategoryId == categoryId && !string.IsNullOrEmpty(p.Avatar))
+            .OrderBy(p => Guid.NewGuid())
+            .FirstOrDefault();
+
+        if (randomProduct != null)
+        {
+            var categoryViewModel = new CategoryViewModel
+                    {
+                        CategoryName = categoryName,
+                        CategoryRuName = GetCategoryRuName(categoryName),
+                        Avatar = randomProduct.Avatar
+                    };
+
+            categoryViewModels.Add(categoryViewModel);
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine($"No product found for category {categoryName}");
+        }
+    }
+}
+
+@functions{
+    public string GetCategoryRuName(string categoryName)
+    {
+        // Ваш код для возврата русского имени категории
+        // Например, вы можете использовать словарь для сопоставления английских и русских названий
+        // Или сделать запрос к базе данных или ресурсам для получения соответствующего русского имени
+        // Ниже пример заглушки
+        return categoryName switch
+        {
+            "Food1" => "Хлеб",
+            "Food2" => "Торты",
+            "Food3" => "Печенье",
+            "Food4" => "Сладости",
+            "Food5" => "Пироги",
+            "Food6" => "Напитки",
+            _ => categoryName  // Возвращаем английское имя, если русское не найдено
+        };
+    }
+}
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,13 +66,11 @@
     <header>
         <nav>
             <ul>
-                <li><a asp-area="" asp-controller="Home" asp-action="Food1">Хлеб</a></li>
-                <li><a asp-area="" asp-controller="Home" asp-action="Food2">Торты</a></li>
-                <li><a asp-area="" asp-controller="Home" asp-action="Food3">Печенье</a></li>
-                <li><a asp-area="" asp-controller="Home" asp-action="Food4">Сладости</a></li>
-                <li><a asp-area="" asp-controller="Home" asp-action="Food5">Пироги</a></li>
-                <li><a asp-area="" asp-controller="Home" asp-action="Food6">Напитки</a></li>
-            </ul> 
+                @foreach (var category in categoryViewModels)
+                {
+                    <li><a asp-area="" asp-controller="Home" asp-action="@category.CategoryName">@category.CategoryRuName</a></li>
+                }
+            </ul>
         </nav>
         <nav>
             <ul>
