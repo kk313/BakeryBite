@@ -18,8 +18,30 @@
 
 .action-buttons {
     grid-column: 3 / span 1; /* Занимает третий столбец */
+    display: flex;
+    flex-direction: column; /* Отображать элементы в столбец */
 }
 
-.btn {
-    margin-bottom: 10px;
-}
+    .action-buttons .btn-primary {
+        width: 100%;
+        padding: 8px;
+        font-size: 16px;
+        background-color: #D9D9D9;
+        border: 5px solid transparent; /* Изменено на solid для видимости */
+        border-radius: 15px;
+        color: #000;
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        text-decoration: none;
+        transition: color 0.3s, border-color 0.3s; /* Анимация при наведении */
+    }
+
+        .action-buttons .btn-primary:hover {
+            color: #0056b3;
+            border-color: #0056b3; /* Изменение цвета границы при наведении */
+        }
+
+    /* Остальные кнопки в столбце */
+    .action-buttons .btn {
+        margin-bottom: 10px;
+    }

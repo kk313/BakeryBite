@@ -17,25 +17,27 @@
     <div class="grid-item">
         @if (Model.Any())
         {
-            <form method="post" action="@Url.Action("AddToCart", "Home")">
-                @foreach (var product in Model)
-                {
-                    <div class="base">
-                        <div class="image">
-                            <img class="product-img" src="data:image/png;base64,@product.Avatar" alt="">
-                        </div>
-                        <div class="text">
-                            <p class="product-name">@product.Name</p>
-                            <p class="product-weight">@(Math.Round(product.Weight / 1000, 2)) кг</p>
-                            <p class="product-detail">@product.Description</p>
-                        </div>
-                        <p class="product-price">@product.Cost руб.</p>
-                        <button type="submit" name="productId" value="@product.Id" class="add-button">
+            @foreach (var product in Model)
+            {
+                <div class="base">
+                    <div class="image">
+                        <img class="product-img" src="data:image/png;base64,@product.Avatar" alt="">
+                    </div>
+                    <div class="text">
+                        <p class="product-name">@product.Name</p>
+                        <p class="product-weight">@(Math.Round(product.Weight / 1000, 2)) кг</p>
+                        <p class="product-detail">@product.Description</p>
+                    </div>
+                    <p class="product-price">@product.Cost руб.</p>
+                    <form method="post" asp-controller="Home" asp-action="AddToCart">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="add-button">
                             <img src="~/img/Add.svg" alt="Изображение">
                         </button>
-                    </div>
-                }
-            </form>
+                    </form>
+                </div>
+            }
         }
         else
         {

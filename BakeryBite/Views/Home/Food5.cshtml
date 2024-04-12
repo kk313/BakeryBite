@@ -29,6 +29,13 @@
                         <p class="product-detail">@product.Description</p>
                     </div>
                     <p class="product-price">@product.Cost руб.</p>
+                    <form method="post" asp-controller="Home" asp-action="AddToCart">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="add-button">
+                            <img src="~/img/Add.svg" alt="Изображение">
+                        </button>
+                    </form>
                 </div>
             }
         }

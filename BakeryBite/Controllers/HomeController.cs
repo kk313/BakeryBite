@@ -13,43 +13,65 @@ namespace BakeryBite.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationContext _context;
-        private readonly ShoppingCart _shoppingCart;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationContext context, ShoppingCart shoppingCart)
+        public HomeController(ILogger<HomeController> logger, ApplicationContext context, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _context = context;
-            _shoppingCart = shoppingCart;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        //[HttpPost]
-        //public IActionResult AddToCart(int productId)
-        //{
-        //    var productToAdd = _context.Product.FirstOrDefault(p => p.Id == productId);
+        public IActionResult Index()
+        {
+            var categoryViewModels = new List<CategoryViewModel>();
 
-        //    if (productToAdd != null)
-        //    {
-        //        _shoppingCart.AddItem(productToAdd, 1);
-        //        Console.WriteLine($"Товар добавлен в корзину: {productToAdd.Name}");
-        //        HttpContext.Session.SetObject("ShoppingCart", _shoppingCart);
-        //    }
-        //    return RedirectToAction("ShoppingCart");
-        //}
+            var categoryIds = _context.Product.Select(p => p.CategoryId).Distinct().ToList();
 
-        //public IActionResult ShoppingCart()
-        //{
-        //    var shoppingCart = HttpContext.Session.GetObject<ShoppingCart>("ShoppingCart");
+            foreach (var categoryId in categoryIds)
+            {
+                string categoryName = $"Food{categoryId}";
 
-        //    if (shoppingCart == null || shoppingCart.GetItems().Count() == 0)
-        //    {
-        //        return View(new List<CartItem>());
-        //    }
+                var randomProduct = _context.Product
+                    .Where(p => p.CategoryId == categoryId && !string.IsNullOrEmpty(p.Avatar))
+                    .OrderBy(p => Guid.NewGuid())
+                    .FirstOrDefault();
 
-        //    var itemsInCart = shoppingCart.GetItems().ToList();
-        //    return View(itemsInCart);
-        //}
+                if (randomProduct != null)
+                {
+                    var categoryViewModel = new CategoryViewModel
+                    {
+                        CategoryName = categoryName,
+                        CategoryRuName = GetCategoryRuName(categoryName),
+                        Avatar = randomProduct.Avatar
+                    };
 
-        public IActionResult Index() => View();
+                    categoryViewModels.Add(categoryViewModel);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"No product found for category {categoryName}");
+                }
+            }
+
+            return View(categoryViewModels);
+        }
+
+        private string GetCategoryRuName(string categoryName)
+        {
+            if (categoryName.StartsWith("Food"))
+            {
+                if (int.TryParse(categoryName.Substring(4), out int categoryId))
+                {
+                    var category = _context.Category.FirstOrDefault(c => c.Id == categoryId);
+                    if (category != null)
+                    {
+                        return category.Name;
+                    }
+                }
+            }
+            return categoryName;
+        }
 
         public IActionResult Food1()
         {
@@ -124,6 +146,67 @@ namespace BakeryBite.Controllers
 
             return RedirectToAction("Profile", "Control");
         }
+
+        public IActionResult ShoppingCart()
+        {
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            List<CartItem> cartItems = cart.items;
+
+            return View(cartItems);
+        }
+
+        [HttpPost]
+        public IActionResult AddToCart(int productId, int quantity)
+        {
+            Product product = _context.Product.FirstOrDefault(p => p.Id == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            CartItem existingItem = cart.items.FirstOrDefault(item => item.ProductId == productId);
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity += quantity;
+            }
+            else
+            {
+                cart.items.Add(new CartItem
+                {
+                    ProductId = productId,
+                    Product = product,
+                    Quantity = quantity
+                });
+            }
+
+            ShoppingCartHelper.SaveCart(HttpContext, cart);
+
+            List<CartItem> cartItems = cart.items;
+
+            return View("ShoppingCart", cartItems);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromCart(int productId)
+        {
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            CartItem itemToRemove = cart.items.FirstOrDefault(item => item.ProductId == productId);
+
+            if (itemToRemove != null)
+            {
+                cart.items.Remove(itemToRemove);
+                ShoppingCartHelper.SaveCart(HttpContext, cart);
+            }
+
+            return RedirectToAction("ShoppingCart", "Home");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
