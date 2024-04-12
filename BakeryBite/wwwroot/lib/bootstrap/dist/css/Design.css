@@ -1,6 +1,4 @@
-﻿/*header*/
-
-header {
+﻿header {
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     padding: 10px;
@@ -35,7 +33,6 @@ nav {
                 transition: color 0.5s, filter 0.5s;
             }
 
-/*body*/
 body {
     margin: 0;
     padding: 0;
@@ -57,7 +54,6 @@ main {
     padding: 20px;
 }
 
-/*footer*/
 footer {
     display: flex;
     justify-content: space-between;
@@ -95,7 +91,6 @@ footer {
         transition: color 0.5s, filter 0.5s;
     }
 
-/*addiction*/
 .icon {
     align-content: center;
 }

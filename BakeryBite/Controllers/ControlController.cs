@@ -178,7 +178,6 @@ namespace BakeryBite.Controllers
 
         private bool CheckInput(ProductViewModel viewModel)
         {
-            // Проверка на пустоту полей и допустимость символов
             if (string.IsNullOrWhiteSpace(viewModel.Product.Name) ||
                 string.IsNullOrWhiteSpace(viewModel.Product.Description) ||
                 string.IsNullOrWhiteSpace(viewModel.Product.Weight.ToString()) ||
@@ -192,7 +191,6 @@ namespace BakeryBite.Controllers
                 return false;
             }
 
-            // Проверка длины названия и описания
             if (viewModel.Product.Name.Length > 32)
             {
                 ModelState.AddModelError(nameof(viewModel.Product.Name), "Название товара не должно превышать 32 символа.");
