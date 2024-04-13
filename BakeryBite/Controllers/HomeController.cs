@@ -207,6 +207,56 @@ namespace BakeryBite.Controllers
             return RedirectToAction("ShoppingCart", "Home");
         }
 
+        public IActionResult OrderConfirmation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmOrder(OrderConfirmationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Создание нового заказа
+                var newOrder = new Order
+                {
+                    OrderDate = DateTime.Now,
+                    TotalAmount = CalculateTotalAmount(), // Метод для расчета общей стоимости из корзины
+                    IsCompleted = 0, // Заказ не завершен, пока не подтвердится
+                    Phone = model.Phone,
+                    Address = model.Address
+                };
+
+                _context.Order.Add(newOrder);
+                _context.SaveChanges();
+
+                var cart = ShoppingCartHelper.GetCart(HttpContext);
+                foreach (var cartItem in cart.items)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = newOrder.Id,
+                        ProductId = cartItem.ProductId,
+                        Quantity = cartItem.Quantity
+                    };
+                    _context.OrderItem.Add(orderItem);
+                }
+                _context.SaveChanges();
+
+                cart.items.Clear();
+                ShoppingCartHelper.SaveCart(HttpContext, cart);
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View("OrderConfirmation", model);
+        }
+
+        private decimal CalculateTotalAmount()
+        {
+            var cart = ShoppingCartHelper.GetCart(HttpContext);
+            return cart.items.Sum(item => item.Quantity * item.Product.Cost);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -1,4 +1,37 @@
 ﻿@{
-    ViewData["Title"] = "Заказы";
+    ViewData["Title"] = "Редактор заказов";
     Layout = "_LayoutSecond";
 }
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/OrderEditor.css" />
+@model List<BakeryBite.Models.Order>
+
+<h1>Редактор заказов</h1>
+
+<div class="order-buttons">
+    <a asp-controller="Home" asp-action="OrderEditor" asp-route-orderType="all" class="btn btn-primary">Все заказы</a>
+    <a asp-controller="Home" asp-action="OrderEditor" asp-route-orderType="completed" class="btn btn-primary">Оформленные заказы</a>
+    <a asp-controller="Home" asp-action="OrderEditor" asp-route-orderType="rejected" class="btn btn-primary">Отклонённые заказы</a>
+</div>
+
+<div class="order-list">
+    @foreach (var order in Model)
+    {
+        <div class="order-item">
+            <h2 class="order-title">Заказ # @order.Id</h2>
+            <p>Дата заказа: @order.OrderDate</p>
+            <p>Сумма заказа: @order.TotalAmount руб.</p>
+            <p>Статус заказа: @Url.Action("GetOrderStatus", "Control", new { status = order.IsCompleted })</p>
+            <div class="order-actions">
+                @if (order.IsCompleted == 0)
+                {
+                    <form method="post" asp-controller="Home" asp-action="UpdateOrderStatus" asp-route-orderId="@order.Id" asp-route-status="completed">
+                        <button type="submit" class="btn btn-primary">Отметить как оформленный</button>
+                    </form>
+                    <form method="post" asp-controller="Home" asp-action="UpdateOrderStatus" asp-route-orderId="@order.Id" asp-route-status="rejected">
+                        <button type="submit" class="btn btn-delete">Отклонить заказ</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+</div>

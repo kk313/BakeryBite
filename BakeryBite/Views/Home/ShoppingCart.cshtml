@@ -6,31 +6,43 @@
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/ShoppingCart.css" />
 <h1>Корзина покупок</h1>
 
-<div class="grid-item">
-    @if (Model != null && Model.Count > 0)
-    {
-        @foreach (var item in Model)
+<div class="grid-container">
+    <div class="grid-item">
+        @if (Model != null && Model.Count > 0)
         {
-            <div class="base">
-                <div class="image">
-                    <img class="product-img" src="data:image/png;base64,@item.Product.Avatar" alt="">
+            @foreach (var item in Model)
+            {
+                <div class="base">
+                    <div class="image">
+                        <img class="product-img" src="data:image/png;base64,@item.Product.Avatar" alt="">
+                    </div>
+                    <div class="text">
+                        <p class="product-name">@item.Product.Name</p>
+                        <p class="product-quantity">Количество: @item.Quantity</p>
+                    </div>
+                    <p class="product-price">Цена: @item.Product.Cost руб.</p>
+                    <form method="post" asp-controller="Home" asp-action="RemoveFromCart">
+                        <input type="hidden" name="productId" value="@item.Product.Id" />
+                        <button type="submit" class="remove-button">
+                            <img src="~/img/Remove.svg" alt="Изображение">
+                        </button>
+                    </form>
                 </div>
-                <div class="text">
-                    <p class="product-name">@item.Product.Name</p>
-                    <p class="product-quantity">Количество: @item.Quantity</p>
-                </div>
-                <p class="product-price">Цена: @item.Product.Cost руб.</p>
-                <form method="post" asp-controller="Home" asp-action="RemoveFromCart">
-                    <input type="hidden" name="productId" value="@item.Product.Id" />
-                    <button type="submit" class="remove-button">
-                        <img src="~/img/Remove.svg" alt="Изображение">
-                    </button>
-                </form>
-            </div>
+            }
         }
-    }
-    else
-    {
-        <p>Ваша корзина пуста.</p>
-    }
+        else
+        {
+            <p>Ваша корзина пуста.</p>
+        }
+    </div>
+
+    <div class="cart-summary">
+        <h3>Итоговая информация</h3>
+        <p>Количество товаров: @Model.Sum(item => item.Quantity)</p>
+        <p>Итоговая стоимость: @Model.Sum(item => item.Quantity * item.Product.Cost) руб.</p>
+        <form method="post" asp-controller="Home" asp-action="OrderConfirmation">
+            <button type="submit" class="checkout-button">Оформить заказ</button>
+        </form>
+    </div>
+
 </div>

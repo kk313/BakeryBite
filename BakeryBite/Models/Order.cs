@@ -5,8 +5,10 @@
         public int Id { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
-        public bool IsCompleted { get; set; }
+        public int IsCompleted { get; set; }
         public int Phone { get; set; }
         public string Address { get; set; }
+
+        public List<OrderItem> OrderItems { get; set; }
     }
 }

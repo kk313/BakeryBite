@@ -1,11 +1,22 @@
-﻿@model BakeryBite.Models.Order
+﻿@model BakeryBite.Data.OrderConfirmationViewModel
 
-<h2>Подтверждение заказа</h2>
+@{
+    ViewData["Title"] = "Подтверждение заказа";
+    Layout = "_Layout";
+}
 
-<p>Заказ № @Model.Id успешно оформлен.</p>
-<p>Общая сумма заказа: @Model.TotalAmount.ToString("0.00") руб.</p>
-<p>Дата заказа: @Model.OrderDate.ToString("dd.MM.yyyy")</p>
-<p>Контактный телефон: @Model.Phone</p>
-<p>Адрес доставки: @Model.Address</p>
+<h1>Оформление заказа</h1>
 
-<a href="/">Вернуться на главную страницу</a>
+<form method="post" asp-action="ConfirmOrder" asp-controller="Home">
+    <div class="form-group">
+        <label asp-for="Address">Адрес доставки:</label>
+        <input asp-for="Address" class="form-control" required />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone">Номер телефона:</label>
+        <input asp-for="Phone" class="form-control" required />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
+</form>

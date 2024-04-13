@@ -6,8 +6,9 @@ namespace BakeryBite
 {
     public class ApplicationContext : DbContext
     {
-		//private readonly string _connection = "Data Source=192.168.221.12;User ID = user04;Password=04;Database=BakeryBite;TrustServerCertificate=true";
-        private readonly string _connection = "Data Source=DESKTOP-4PAD45N\\SQLEXPRESS;Database=BakeryBite;Integrated Security=sspi;Encrypt=true;TrustServerCertificate=true;";
+        //private readonly string _connection = "Data Source=192.168.221.12;User ID = user04;Password=04;Database=BakeryBite;TrustServerCertificate=true";
+        //private readonly string _connection = "Data Source=DESKTOP-4PAD45N\\SQLEXPRESS;Database=BakeryBite;Integrated Security=sspi;Encrypt=true;TrustServerCertificate=true;";
+        private readonly string _connection = "Data Source=DESKTOP-S1JLV2G\\SQLEXPRESS;Database=BakeryBite;Integrated Security=sspi;Encrypt=true;TrustServerCertificate=true;";
 
         public DbSet<User> User { get; set; }
         public DbSet<Product> Product { get; set; }
@@ -16,6 +17,7 @@ namespace BakeryBite
         public DbSet<Order> Order { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<CartItem> CartItem { get; set; }
+        public DbSet<OrderItem> OrderItem { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options) { }

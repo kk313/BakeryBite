@@ -122,8 +122,6 @@ namespace BakeryBite.Controllers
                 _context.Product.Add(product);
                 _context.SaveChanges();
 
-                TempData["SuccessMessage"] = "Новый товар успешно добавлен.";
-
                 return RedirectToAction("ProductsEditor");
             }
             catch (Exception ex)
@@ -198,6 +196,52 @@ namespace BakeryBite.Controllers
             }
         }
 
+        [HttpGet("ordereditor")]
+        public IActionResult OrderEditor(string orderType)
+        {
+            List<Order> orders;
+
+            switch (orderType)
+            {
+                case "completed":
+                    orders = _context.Order.Where(o => o.IsCompleted == 1).ToList();
+                    break;
+                case "rejected":
+                    orders = _context.Order.Where(o => o.IsCompleted == 2).ToList();
+                    break;
+                default:
+                    orders = _context.Order.Where(o => o.IsCompleted == 0).ToList();
+                    break;
+            }
+
+            return View(orders);
+        }
+
+        [HttpPost("updateorderstatus")]
+        public IActionResult UpdateOrderStatus(int orderId, int status)
+        {
+            var order = _context.Order.FirstOrDefault(o => o.Id == orderId);
+            if (order != null)
+            {
+                order.IsCompleted = status;
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("OrderEditor");
+        }
+
+        public string GetOrderStatus(int status)
+        {
+            switch (status)
+            {
+                case 1:
+                    return "Оформлен";
+                case 2:
+                    return "Отклонён";
+                default:
+                    return "Не завершён";
+            }
+        }
 
         private bool CheckInput(ProductViewModel viewModel)
         {
