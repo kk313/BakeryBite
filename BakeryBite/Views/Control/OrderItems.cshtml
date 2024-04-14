@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Товары в заказе";
+    Layout = "_LayoutSecond";
+}
+@model List<OrderItem>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/OrderItems.css" />
+
+<h1>Товары в заказе</h1>
+
+<div class="grid-container">
+    @foreach (var item in Model)
+    {
+        <div class="base">
+            <div class="image">
+                <img class="product-img" src="data:image/png;base64,@item.Product.Avatar" alt="@item.Product.Name">
+            </div>
+            <div class="text">
+                <p class="product-name">@item.Product.Name</p>
+                <p class="product-quantity">Количество: @item.Quantity</p>
+            </div>
+            <p class="product-price">Цена: @item.Product.Cost руб.</p>
+        </div>
+    }
+</div>

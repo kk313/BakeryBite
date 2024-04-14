@@ -217,12 +217,11 @@ namespace BakeryBite.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Создание нового заказа
                 var newOrder = new Order
                 {
                     OrderDate = DateTime.Now,
-                    TotalAmount = CalculateTotalAmount(), // Метод для расчета общей стоимости из корзины
-                    IsCompleted = 0, // Заказ не завершен, пока не подтвердится
+                    TotalAmount = CalculateTotalAmount(),
+                    IsCompleted = 0,
                     Phone = model.Phone,
                     Address = model.Address
                 };

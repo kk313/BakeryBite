@@ -1,15 +1,15 @@
 ﻿@{
-    ViewData["Title"] = "Заказы";
+    ViewData["Title"] = "Отклоненные заказы";
     Layout = "_LayoutSecond";
 }
 
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/OrderEditor.css" />
 @model List<BakeryBite.Models.Order>
-    
-<h1>Заказы</h1>
+
+<h1>Отклоненные заказы</h1>
 
 <div class="order-buttons">
-    <a asp-controller="Control" asp-action="OrderEditor" class="btn btn-primary">Не завершённые заказы</a>
+    <a asp-controller="Control" asp-action="OrderEditor" class="btn btn-primary">Не завершенные заказы</a>
     <a asp-controller="Control" asp-action="OrderConfirmed" class="btn btn-primary">Подтвержденные заказы</a>
     <a asp-controller="Control" asp-action="OrderRejected" class="btn btn-primary">Отклоненные заказы</a>
 </div>
@@ -33,32 +33,21 @@
                     }
                     else if (order.IsCompleted == 2)
                     {
-                        <span class="status-rejected">Отклонён</span>
+                        <span class="status-rejected">Отклонен</span>
                     }
                     else
                     {
-                        <span class="status-pending">Не завершён</span>
+                        <span class="status-pending">Не завершен</span>
                     }
                 </p>
                 <p>
                     <a href="@Url.Action("OrderItems", "Control", new { orderId = order.Id })">Подробнее</a>
                 </p>
-                <div class="order-actions">
-                    @if (order.IsCompleted == 0)
-                    {
-                        <form method="post" onsubmit="return confirm('Подтвердите оформление заказа?');" action="@Url.Action("UpdateOrderStatus", "Control", new { orderId = order.Id, status = 1 })">
-                            <button type="submit" class="btn btn-primary">Отметить как оформленный</button>
-                        </form>
-                        <form method="post" onsubmit="return confirm('Подтвердите отмену заказа?');" action="@Url.Action("UpdateOrderStatus", "Control", new { orderId = order.Id, status = 2 })">
-                            <button type="submit" class="btn btn-delete">Отклонить заказ</button>
-                        </form>
-                    }
-                </div>
             </div>
         }
     </div>
 }
 else
 {
-    <p>Нет не завершенных заказов.</p>
+    <p>Нет отклоненных заказов.</p>
 }

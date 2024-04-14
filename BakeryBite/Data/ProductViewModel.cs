@@ -1,5 +1,7 @@
 ﻿using BakeryBite.Models;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace BakeryBite.Data
 {
     public class ProductViewModel

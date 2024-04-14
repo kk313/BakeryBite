@@ -4,8 +4,7 @@
     ViewData["Title"] = "Добавление товара";
     Layout = "_LayoutSecond";
 }
-
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodOneEditor.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/EditorTemplate.css" />
 
 <h2>Добавление нового товара</h2>
 
@@ -44,29 +43,10 @@
 
     <div class="form-group">
         <label asp-for="Image" class="control-label">Изображение товара:</label>
-        <input type="file" id="Image" name="Image" accept="image/*" class="form-control-file" onchange="previewImage(event)" />
+        <input type="file" id="Image" name="Image" accept="image/*" class="form-control-file" onchange="previewImage(event)" data-val="false" />
         <span asp-validation-for="Image" class="text-danger"></span>
-        <br />
-        <img id="previewImage" class="img-thumbnail hidden" alt="Предпросмотр изображения" />
     </div>
+
 
     <button type="submit" class="btn btn-primary">Добавить товар</button>
 </form>
-
-<script>
-    function previewImage(event) {
-        var input = event.target;
-
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                var imgElement = document.getElementById('previewImage');
-                imgElement.src = e.target.result;
-                imgElement.classList.remove('hidden');
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>

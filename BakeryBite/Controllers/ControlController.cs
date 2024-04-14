@@ -2,6 +2,7 @@
 using BakeryBite.Models;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using System.Text.RegularExpressions;
 
@@ -53,7 +54,33 @@ namespace BakeryBite.Controllers
             return RedirectToAction("Authorize", "Home", emptyModel);
         }
 
-        public IActionResult OrderEditor() => View();
+        public IActionResult OrderEditor()
+        {
+            List<Order> orders = _context.Order.Where(o => o.IsCompleted == 0).ToList();
+            return View(orders);
+        }
+
+        public IActionResult OrderConfirmed()
+        {
+            List<Order> confirmedOrders = _context.Order.Where(o => o.IsCompleted == 1).ToList();
+            return View(confirmedOrders);
+        }
+
+        public IActionResult OrderRejected()
+        {
+            List<Order> rejectedOrders = _context.Order.Where(o => o.IsCompleted == 2).ToList();
+            return View(rejectedOrders);
+        }
+
+        public IActionResult OrderItems(int orderId)
+        {
+            var orderItems = _context.OrderItem
+                                     .Include(oi => oi.Product)
+                                     .Where(oi => oi.OrderId == orderId)
+                                     .ToList();
+
+            return View(orderItems);
+        }
 
         public IActionResult ProductsEditor()
         {
@@ -186,36 +213,36 @@ namespace BakeryBite.Controllers
 
             try
             {
-                _context.Product.Remove(product);
-                _context.SaveChanges();
-                return Json(new { success = true });
+                var isProductInOrders = _context.OrderItem.Any(oi => oi.ProductId == productId);
+
+                if (isProductInOrders)
+                {
+                    return Json(new { success = false, errorMessage = "Невозможно удалить товар, так как он уже используется в заказах." });
+                }
+
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        _context.Product.Remove(product);
+                        _context.SaveChanges();
+                        transaction.Commit();
+
+                        return Json(new { success = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return Json(new { success = false, errorMessage = "Ошибка при удалении товара: " + ex.Message });
+                    }
+                }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, errorMessage = "Ошибка при удалении товара: " + ex.Message });
+                return Json(new { success = false, errorMessage = "Ошибка при проверке наличия товара в заказах: " + ex.Message });
             }
         }
 
-        [HttpGet("ordereditor")]
-        public IActionResult OrderEditor(string orderType)
-        {
-            List<Order> orders;
-
-            switch (orderType)
-            {
-                case "completed":
-                    orders = _context.Order.Where(o => o.IsCompleted == 1).ToList();
-                    break;
-                case "rejected":
-                    orders = _context.Order.Where(o => o.IsCompleted == 2).ToList();
-                    break;
-                default:
-                    orders = _context.Order.Where(o => o.IsCompleted == 0).ToList();
-                    break;
-            }
-
-            return View(orders);
-        }
 
         [HttpPost("updateorderstatus")]
         public IActionResult UpdateOrderStatus(int orderId, int status)

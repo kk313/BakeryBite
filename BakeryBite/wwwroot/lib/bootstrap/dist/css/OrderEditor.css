@@ -54,3 +54,18 @@
     .btn-delete:hover {
         color: #fb2727;
     }
+
+.status-completed {
+    color: green;
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: red;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: orange;
+    font-weight: bold;
+}

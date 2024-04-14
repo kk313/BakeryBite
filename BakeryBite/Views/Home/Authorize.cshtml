@@ -15,12 +15,12 @@
 
                 <div class="form-group">
                     <label for="loginInput">Логин</label>
-                    <input type="text" class="form-control" id="loginInput" name="UserName" placeholder="Введите ваш логин">
+                    <input type="text" class="form-control" id="loginInput" name="UserName" placeholder="Введите ваш логин" required>
                 </div>
 
                 <div class="form-group">
                     <label for="passwordInput">Пароль</label>
-                    <input type="password" class="form-control" id="passwordInput" name="Password" placeholder="Введите ваш пароль">
+                    <input type="password" class="form-control" id="passwordInput" name="Password" placeholder="Введите ваш пароль" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Вход</button>
@@ -28,23 +28,3 @@
         </div>
     </div>
 </main>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('form').submit(function (e) {
-            var userName = $('#loginInput').val();
-            var password = $('#passwordInput').val();
-
-            if (userName === '') {
-                e.preventDefault();
-                alert('Пожалуйста, введите ваш логин.');
-            }
-
-            if (password === '') {
-                e.preventDefault();
-                alert('Пожалуйста, введите ваш пароль.');
-            }
-        });
-    });
-</script>

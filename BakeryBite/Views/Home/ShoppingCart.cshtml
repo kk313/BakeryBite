@@ -36,13 +36,15 @@
         }
     </div>
 
-    <div class="cart-summary">
-        <h3>Итоговая информация</h3>
-        <p>Количество товаров: @Model.Sum(item => item.Quantity)</p>
-        <p>Итоговая стоимость: @Model.Sum(item => item.Quantity * item.Product.Cost) руб.</p>
-        <form method="post" asp-controller="Home" asp-action="OrderConfirmation">
-            <button type="submit" class="checkout-button">Оформить заказ</button>
-        </form>
-    </div>
-
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="cart-summary">
+            <h3>Итоговая информация</h3>
+            <p>Количество товаров: @Model.Sum(item => item.Quantity)</p>
+            <p>Итоговая стоимость: @Model.Sum(item => item.Quantity * item.Product.Cost) руб.</p>
+            <form method="post" asp-controller="Home" asp-action="OrderConfirmation">
+                <button type="submit" class="checkout-button">Оформить заказ</button>
+            </form>
+        </div>
+    }
 </div>
