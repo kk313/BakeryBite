@@ -21,12 +21,9 @@
                         <p class="product-quantity">Количество: @item.Quantity</p>
                     </div>
                     <p class="product-price">Цена: @item.Product.Cost руб.</p>
-                    <form method="post" asp-controller="Home" asp-action="RemoveFromCart">
-                        <input type="hidden" name="productId" value="@item.Product.Id" />
-                        <button type="submit" class="remove-button">
-                            <img src="~/img/Remove.svg" alt="Изображение">
-                        </button>
-                    </form>
+                    <button type="button" class="remove-button" onclick="removeFromCart(@item.Product.Id)">
+                        <img src="~/img/Remove.svg" alt="Изображение">
+                    </button>
                 </div>
             }
         }
@@ -48,3 +45,21 @@
         </div>
     }
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function removeFromCart(productId) {
+        if (confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
+            $.ajax({
+                url: '@Url.Action("RemoveFromCart", "Home")',
+                type: 'POST',
+                data: { productId: productId },ержимое страницы
+                    location.reload(); 
+                },
+                error: function () {
+                    alert('Ошибка при удалении товара из корзины.');
+                }
+            });
+        }
+    }
+</script>

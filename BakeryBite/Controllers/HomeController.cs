@@ -186,11 +186,8 @@ namespace BakeryBite.Controllers
 
             ShoppingCartHelper.SaveCart(HttpContext, cart);
 
-            List<CartItem> cartItems = cart.items;
-
-            return View("ShoppingCart", cartItems);
+            return Ok();
         }
-
         [HttpPost]
         public IActionResult RemoveFromCart(int productId)
         {
@@ -202,10 +199,12 @@ namespace BakeryBite.Controllers
             {
                 cart.items.Remove(itemToRemove);
                 ShoppingCartHelper.SaveCart(HttpContext, cart);
+                return Ok(); 
             }
 
-            return RedirectToAction("ShoppingCart", "Home");
+            return NotFound();
         }
+
 
         public IActionResult OrderConfirmation()
         {
@@ -222,7 +221,7 @@ namespace BakeryBite.Controllers
                     OrderDate = DateTime.Now,
                     TotalAmount = CalculateTotalAmount(),
                     IsCompleted = 0,
-                    Phone = model.Phone,
+                    Phone = Convert.ToInt64(model.Phone),
                     Address = model.Address
                 };
 

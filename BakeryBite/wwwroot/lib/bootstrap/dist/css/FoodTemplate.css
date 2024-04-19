@@ -109,3 +109,41 @@ form {
 #icon:hover {
     cursor: pointer;
 }
+
+.feedback-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+    .feedback-panel.active {
+        opacity: 1;
+        visibility: visible;
+        transition-delay: 0s;
+    }
+
+.feedback-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.feedback-message {
+    font-size: 14px;
+}
+
+.close-feedback {
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}

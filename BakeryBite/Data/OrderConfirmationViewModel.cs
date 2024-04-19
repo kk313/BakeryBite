@@ -3,6 +3,6 @@
     public class OrderConfirmationViewModel
     {
         public string Address { get; set; }
-        public int Phone { get; set; }
+        public string Phone { get; set; }
     }
 }

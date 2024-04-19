@@ -49,7 +49,8 @@ namespace BakeryBite.Controllers
         {
             var emptyModel = new LoginViewModel();
 
-            HttpContext.Session.Clear();
+            HttpContext.Session.Remove("UserName");
+            HttpContext.Session.Remove("UserRole");
 
             return RedirectToAction("Authorize", "Home", emptyModel);
         }

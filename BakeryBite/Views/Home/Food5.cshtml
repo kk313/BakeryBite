@@ -11,7 +11,6 @@
                 <img src="~/img/Subtract.svg" alt="Изображение">
             </button>
         </form>
-
         <h1 class="start">Пироги</h1>
     </div>
     <div class="grid-item">
@@ -29,13 +28,9 @@
                         <p class="product-detail">@product.Description</p>
                     </div>
                     <p class="product-price">@product.Cost руб.</p>
-                    <form method="post" asp-controller="Home" asp-action="AddToCart">
-                        <input type="hidden" name="productId" value="@product.Id" />
-                        <input type="hidden" name="quantity" value="1" />
-                        <button type="submit" class="add-button">
-                            <img src="~/img/Add.svg" alt="Изображение">
-                        </button>
-                    </form>
+                    <button type="button" class="add-button" onclick="addToCart(@product.Id, 1)">
+                        <img src="~/img/Add.svg" alt="Изображение">
+                    </button>
                 </div>
             }
         }
@@ -47,3 +42,19 @@
         }
     </div>
 </main>
+
+<script>
+    function addToCart(productId, quantity) {
+        $.ajax({
+            url: '@Url.Action("AddToCart", "Home")',
+            type: 'POST',
+            data: { productId: productId, quantity: quantity },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                alert('Ошибка при добавлении товара в корзину.');
+            }
+        });
+    }
+</script>
