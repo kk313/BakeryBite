@@ -130,6 +130,11 @@ namespace BakeryBite.Controllers
             return View();
         }
 
+        public IActionResult Registration()
+        {
+            return View();
+        }
+
         [HttpPost]
         public IActionResult Login(string userName, string password)
         {
@@ -188,6 +193,7 @@ namespace BakeryBite.Controllers
 
             return Ok();
         }
+
         [HttpPost]
         public IActionResult RemoveFromCart(int productId)
         {
@@ -197,9 +203,18 @@ namespace BakeryBite.Controllers
 
             if (itemToRemove != null)
             {
-                cart.items.Remove(itemToRemove);
+                if (itemToRemove.Quantity > 1)
+                {
+                    itemToRemove.Quantity -= 1;
+                }
+                else
+                {
+                    cart.items.Remove(itemToRemove);
+                }
+
                 ShoppingCartHelper.SaveCart(HttpContext, cart);
-                return Ok(); 
+
+                return Ok();
             }
 
             return NotFound();

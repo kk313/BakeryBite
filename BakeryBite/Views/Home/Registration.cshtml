@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_LayoutSecond";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/Authorize.css" />
+
+<main>
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2 class="auth-title">Регистрация</h2>
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+            {
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label for="firstNameInput">Имя</label>
+                    <input type="text" class="form-control" id="firstNameInput" name="FirstName" placeholder="Введите ваше имя" required maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Имя должно содержать только русские буквы и быть не длиннее 32 символов">
+                </div>
+
+                <div class="form-group">
+                    <label for="lastNameInput">Фамилия</label>
+                    <input type="text" class="form-control" id="lastNameInput" name="LastName" placeholder="Введите вашу фамилию" required maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Фамилия должна содержать только русские буквы и быть не длиннее 32 символов">
+                </div>
+
+                <div class="form-group">
+                    <label for="patronymicInput">Отчество</label>
+                    <input type="text" class="form-control" id="middleNameInput" name="MiddleName" placeholder="Введите ваше отчество" required maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Отчество должно содержать только русские буквы и быть не длиннее 32 символов">
+                </div>
+
+                <div class="form-group">
+                    <label for="emailInput">Почта</label>
+                    <input type="email" class="form-control" id="emailInput" name="Email" placeholder="Введите вашу почту" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneInput">Номер телефона</label>
+                    <input type="tel" class="form-control" id="phoneInput" name="PhoneNumber" placeholder="Введите ваш номер телефона" required pattern="[0-9]{11}" title="Номер телефона должен состоять из 11 цифр">
+                </div>
+
+                <div class="form-group">
+                    <label for="loginInput">Логин</label>
+                    <input type="text" class="form-control" id="loginInput" name="UserName" placeholder="Введите ваш логин" required pattern="[a-zA-Z0-9]+" maxlength="32" title="Логин должен содержать только латинские буквы и цифры, без пробелов">
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordInput">Пароль</label>
+                    <input type="password" class="form-control" id="passwordInput" name="Password" placeholder="Введите ваш пароль" required
+                           pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*"
+                           title="Пароль должен содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ. Минимальная длина - 8 символов."
+                           maxlength="32" minlength="8" title="Пароль должен быть не менее 8 символов и содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ">
+                </div>
+
+
+                <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+            }
+        </div>
+    </div>
+</main>

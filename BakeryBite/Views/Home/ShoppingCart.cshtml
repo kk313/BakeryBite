@@ -53,8 +53,9 @@
             $.ajax({
                 url: '@Url.Action("RemoveFromCart", "Home")',
                 type: 'POST',
-                data: { productId: productId },ержимое страницы
-                    location.reload(); 
+                data: { productId: productId },
+                success: function () {
+                    location.reload();
                 },
                 error: function () {
                     alert('Ошибка при удалении товара из корзины.');

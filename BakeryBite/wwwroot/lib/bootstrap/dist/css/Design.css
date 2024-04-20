@@ -115,6 +115,6 @@ footer {
 
 a.active, a:hover {
     color: wheat;
-    transition: .5s;
+    transition: all .5s;
     filter: brightness(0.9);
 }
