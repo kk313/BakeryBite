@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BakeryBite.Controllers
 {
@@ -255,7 +256,6 @@ namespace BakeryBite.Controllers
             return NotFound();
         }
 
-
         public IActionResult OrderConfirmation()
         {
             return View();
@@ -266,13 +266,31 @@ namespace BakeryBite.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = HttpContext.Session.GetInt32("UserId");
+
+                if (userId != null)
+                {
+                    var user = _context.User.FirstOrDefault(u => u.Id == userId);
+
+                    if (user != null)
+                    {
+                        model.Name = user.Name;
+                        model.Email = user.Email;
+                        model.Phone = user.Phone.ToString(); 
+                    }
+                }
+
                 var newOrder = new Order
                 {
                     OrderDate = DateTime.Now,
-                    TotalAmount = CalculateTotalAmount(),
+                    TotalAmount = CalculateTotalAmount(), 
                     IsCompleted = 0,
                     Phone = Convert.ToInt64(model.Phone),
-                    Address = model.Address
+                    Address = model.Address,
+                    Name = model.Name,
+                    Email = model.Email,
+                    PaymentMethod = model.PaymentMethod.ToString(),
+                    UserId = HttpContext.Session.GetInt32("UserId")
                 };
 
                 _context.Order.Add(newOrder);
@@ -289,6 +307,7 @@ namespace BakeryBite.Controllers
                     };
                     _context.OrderItem.Add(orderItem);
                 }
+
                 _context.SaveChanges();
 
                 cart.items.Clear();
@@ -299,6 +318,7 @@ namespace BakeryBite.Controllers
 
             return View("OrderConfirmation", model);
         }
+
 
         private decimal CalculateTotalAmount()
         {

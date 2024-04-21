@@ -6,12 +6,6 @@
         public string Phone { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
-    }
-
-    public enum PaymentMethod
-    {
-        Картой,
-        Наличными
+        public string PaymentMethod { get; set; }
     }
 }

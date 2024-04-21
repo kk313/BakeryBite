@@ -8,6 +8,9 @@
         public int IsCompleted { get; set; }
         public long Phone { get; set; }
         public string Address { get; set; }
+        public string Name { get; set; } 
+        public string Email { get; set; } 
+        public string PaymentMethod { get; set; }
         public int? UserId { get; set; }
         public User User { get; set; }
 

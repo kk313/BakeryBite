@@ -8,35 +8,61 @@
 
 <h1>Оформление заказа</h1>
 
+@{
+    var userId = Context.Session.GetInt32("UserId");
+}
+
 <form method="post" asp-action="ConfirmOrder" asp-controller="Home">
-    <div class="form-group">
-        <label asp-for="Name">Имя (на русском):</label>
-        <input asp-for="Name" class="form-control" required />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Email">Почта:</label>
-        <input asp-for="Email" class="form-control" required />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Address">Адрес доставки:</label>
-        <input asp-for="Address" class="form-control" required />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Phone">Номер телефона:</label>
-        <input asp-for="Phone" class="form-control" required />
-        <span asp-validation-for="Phone" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PaymentMethod">Способ оплаты:</label>
-        <select asp-for="PaymentMethod" class="form-control" required>
-            <option value="">Выберите способ оплаты</option>
-            <option value="Картой">Картой</option>
-            <option value="Наличными">Наличными</option>
-        </select>
-        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-    </div>
+    @if (userId != null)
+    {
+        <div class="form-group">
+            <label asp-for="Address">Адрес доставки:</label>
+            <input asp-for="Address" type="text" class="form-control" required />
+            <span asp-validation-for="Address" placeholder="Введите адрес доставки" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PaymentMethod">Способ оплаты:</label>
+            <select asp-for="PaymentMethod" class="form-control" required>
+                <option value="Карта">Картой</option>
+                <option value="Наличные">Наличными</option>
+            </select>
+            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Name" value="q" />
+        <input type="hidden" asp-for="Email" value="q" />
+        <input type="hidden" asp-for="Phone" value="1" />
+
+    }
+    else
+    {
+        <div class="form-group">
+            <label asp-for="Name">Имя:</label>
+            <input asp-for="Name" type="text" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" placeholder="Введите ваше имя" class="form-control" required title="Имя должно содержать только русские буквы и быть не длиннее 32 символов" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" type="email" placeholder="Введите вашу почту" class="form-control" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone">Номер телефона:</label>
+            <input asp-for="Phone" type="tel" pattern="[0-9]{11}" placeholder="Введите ваш номер телефона" class="form-control" required title="Номер телефона должен состоять из 11 цифр" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address">Адрес доставки:</label>
+            <input asp-for="Address" type="text" placeholder="Введите адрес доставки" class="form-control" required />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PaymentMethod">Способ оплаты:</label>
+            <select asp-for="PaymentMethod" class="form-control" required>
+                <option value="Карта">Картой</option>
+                <option value="Наличные">Наличными</option>
+            </select>
+            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+        </div>
+    }
     <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
 </form>
