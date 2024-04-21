@@ -21,36 +21,28 @@ namespace BakeryBite.Controllers
 
         public IActionResult Profile()
         {
-            string? userName = HttpContext.Session.GetString("UserName");
-            string? userRole = HttpContext.Session.GetString("UserRole");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userRole))
+            if (userId == null)
             {
                 return RedirectToAction("Authorize", "Home");
             }
 
-            var role = _context.Role.FirstOrDefault(r => r.Id == int.Parse(userRole));
+            var user = _context.User.Include(u => u.Role).FirstOrDefault(u => u.Id == userId);
 
-            if (role == null)
+            if (user == null)
             {
                 return RedirectToAction("Authorize", "Home");
             }
 
-            var profileModel = new LoginViewModel
-            {
-                UserName = userName,
-                UserRole = role.Name
-            };
-
-            return View(profileModel);
+            return View(user);
         }
 
         public IActionResult Logout()
         {
             var emptyModel = new LoginViewModel();
 
-            HttpContext.Session.Remove("UserName");
-            HttpContext.Session.Remove("UserRole");
+            HttpContext.Session.Remove("UserId");
 
             return RedirectToAction("Authorize", "Home", emptyModel);
         }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BakeryBite.Controllers
 {
@@ -123,7 +124,7 @@ namespace BakeryBite.Controllers
 
         public IActionResult Authorize()
         {
-            if (HttpContext.Session.GetString("UserName") != null)
+            if (HttpContext.Session.GetString("UserId") != null)
             {
                 return RedirectToAction("Profile", "Control");
             }
@@ -146,10 +147,44 @@ namespace BakeryBite.Controllers
                 return View("Authorize");
             }
 
-            HttpContext.Session.SetString("UserName", user.Name.ToString());
-            HttpContext.Session.SetString("UserRole", user.RoleId.ToString());
+            HttpContext.Session.SetInt32("UserId", user.Id);
 
             return RedirectToAction("Profile", "Control");
+        }
+
+        [HttpPost]
+        public IActionResult Register(string firstName, string lastName, string middleName, string email, string phoneNumber, string userName, string password)
+        {
+            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(phoneNumber) || string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
+            {
+                ModelState.AddModelError(string.Empty, "Необходимо заполнить все обязательные поля.");
+                return View("Registration"); 
+            }
+
+            try
+            {
+                var user = new User
+                {
+                    Name = firstName,
+                    Surname = lastName,
+                    Patronymic = middleName,
+                    Email = email,
+                    Phone = phoneNumber,
+                    Login = userName,
+                    Password = password,
+                    RoleId = 4
+                };
+
+                _context.User.Add(user);
+                _context.SaveChanges();
+
+                return RedirectToAction("Authorize");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Ошибка сохранения данных: {ex.Message}");
+                return View("Registration"); 
+            }
         }
 
         public IActionResult ShoppingCart()

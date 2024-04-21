@@ -1,8 +1,10 @@
-﻿@{
+﻿@model BakeryBite.Models.User
+
+@{
     ViewData["Title"] = "Профиль";
     Layout = "_LayoutSecond";
 }
-@model BakeryBite.Data.LoginViewModel
+
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/Profile.css" />
 
 <div class="profile-container">
@@ -12,15 +14,15 @@
             <img src="" alt="Аватар пользователя" class="avatar-img">
         </div>
         <div class="user-info">
-            <p><strong>Имя пользователя:</strong> @Model.UserName</p>
-            <p><strong>Роль пользователя:</strong> @Model.UserRole</p>
+            <p><strong>Имя пользователя:</strong> @($"{Model.Surname} {Model.Patronymic[0]}. {Model.Name[0]}.")</p>
+            <p><strong>Роль пользователя:</strong> @Model.Role.Name</p>
         </div>
         <div class="action-buttons">
-            @if (Model.UserRole == "Администратор" || Model.UserRole == "Менеджер Товаров")
+            @if (Model.Role.Name == "Администратор" || Model.Role.Name == "Менеджер Товаров")
             {
                 <button type="button" class="btn btn-primary" onclick="redirectToProductsEditor()">Товары</button>
             }
-            @if (Model.UserRole == "Администратор" || Model.UserRole == "Менеджер Заказов")
+            @if (Model.Role.Name == "Администратор" || Model.Role.Name == "Менеджер Заказов")
             {
                 <button type="button" class="btn btn-primary" onclick="redirectToOrderEditor()">Заказы</button>
             }
@@ -29,15 +31,12 @@
     </div>
 </div>
 
-
 <script>
     function redirectToProductsEditor() {
-        var url = '@Url.Action("ProductsEditor", "Control")';
-        window.location.href = url;
+        window.location.href = '@Url.Action("ProductsEditor", "Control")';
     }
 
     function redirectToOrderEditor() {
-        var url = '@Url.Action("OrderEditor", "Control")';
-        window.location.href = url;
+        window.location.href = '@Url.Action("OrderEditor", "Control")';
     }
 </script>
