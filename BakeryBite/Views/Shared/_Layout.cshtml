@@ -62,6 +62,9 @@
     <header>
         <nav>
             <ul>
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/img/BakeryBiteLogoCroissant.png" alt="BakeryBite Logo" class="s_logo" width="30px" height="30px">
+                </a>
                 @foreach (var category in categoryViewModels)
                 {
                     <li><a asp-area="" asp-controller="Home" asp-action="@category.CategoryName">@category.CategoryRuName</a></li>
@@ -101,7 +104,8 @@
 
     <footer>
         <div class="container footer-left">
-            &copy; 2023 - BakeryBite
+            <img src="~/img/BakeryBiteLogo.png" alt="BakeryBite Logo" class="logo" width="200px" height="auto   ">
+            &copy; 2024 - BakeryBite
         </div>
         <div class="footer-center">
             <a asp-area="" asp-controller="Sections" asp-action="FAQ">Часто задаваемые вопросы</a>
@@ -111,8 +115,6 @@
             <a asp-area="" asp-controller="Sections" asp-action="Contacts">Контакты</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

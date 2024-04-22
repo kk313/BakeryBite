@@ -26,6 +26,7 @@
             {
                 <button type="button" class="btn btn-primary" onclick="redirectToOrderEditor()">Заказы</button>
             }
+            <button type="button" class="btn btn-primary" onclick="redirectToProfileEditor()">Изменение данных</button>
             <a href="@Url.Action("Logout", "Control")" class="btn btn-danger">Выход</a>
         </div>
     </div>
@@ -37,6 +38,10 @@
     }
 
     function redirectToOrderEditor() {
+        window.location.href = '@Url.Action("OrderEditor", "Control")';
+    }
+
+    function redirectToProfileEditor() {
         window.location.href = '@Url.Action("OrderEditor", "Control")';
     }
 </script>

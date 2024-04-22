@@ -72,6 +72,10 @@ footer {
 .footer-left {
     grid-column: 1;
     align-self: end;
+    flex-direction: column;
+    display: flex;
+    justify-content: start;
+    align-items: center;
 }
 
 .footer-center {
@@ -90,6 +94,15 @@ footer {
         text-decoration: none;
         transition: color 0.5s, filter 0.5s;
     }
+
+.logo {
+    margin-bottom: 10px;
+}
+
+.s_logo {
+    margin-right: 10px;
+}
+
 
 .icon {
     align-content: center;
