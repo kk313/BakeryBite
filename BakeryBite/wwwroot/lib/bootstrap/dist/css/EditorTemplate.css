@@ -1,7 +1,7 @@
 ﻿.btn-primary {
-    width: 50%; /* Уменьшаем ширину кнопки до 50% от родительского контейнера */
-    padding: 8px; /* Уменьшаем внутренние отступы кнопки */
-    font-size: 14px; /* Уменьшаем размер шрифта кнопки */
+    width: 50%; 
+    padding: 8px; 
+    font-size: 14px; 
     background-color: #d9d9d9;
     border: 2px solid transparent;
     border-radius: 5px;
@@ -9,7 +9,7 @@
     cursor: pointer;
     border-color: transparent;
     font-family: 'Montserrat', sans-serif;
-    margin-top: 15px; /* Добавляем верхний отступ между элементами */
+    margin-top: 15px; 
 }
 
     .btn-primary:hover {
@@ -18,12 +18,11 @@
         color: #fff;
     }
 
-/* Обновленный стиль для полей ввода .form-control */
 .form-control {
     display: block;
-    width: 50%; /* Уменьшаем ширину поля ввода до 50% от родительского контейнера */
-    padding: 6px; /* Уменьшаем внутренние отступы поля ввода */
-    font-size: 14px; /* Уменьшаем размер шрифта поля ввода */
+    width: 50%; 
+    padding: 6px; 
+    font-size: 14px; 
     line-height: 1.5;
     color: #495057;
     background-color: #fff;
@@ -31,7 +30,7 @@
     border: 1px solid #ced4da;
     border-radius: 4px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    margin-top: 10px; /* Добавляем верхний отступ между элементами */
+    margin-top: 10px; 
 }
 
     .form-control:focus {
@@ -40,10 +39,9 @@
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
-/* Стиль для текста ошибок .text-danger */
 .text-danger {
-    font-size: 12px; /* Уменьшаем размер шрифта текста ошибок */
-    color: #dc3545;
-    margin-top: 5px; /* Добавляем верхний отступ между элементами */
-    display: block; /* Устанавливаем блочный тип для текста ошибок */
+    color: red;
+    margin-top: 10px;
+    margin-left: 5px;
+    font-size: 10px;
 }

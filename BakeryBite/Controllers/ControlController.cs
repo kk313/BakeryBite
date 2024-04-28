@@ -110,6 +110,87 @@ namespace BakeryBite.Controllers
             return View(viewModel);
         }
 
+        public IActionResult ProfileEditor()
+        {
+            if (!HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
+            {
+                return NotFound();
+            }
+
+            int userId = (int)HttpContext.Session.GetInt32("UserId");
+
+            var user = _context.User.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return NotFound(); 
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateUser(User model)
+        {
+            if (ModelState.IsValid || string.IsNullOrEmpty(model.Password)) 
+            {
+                var user = _context.User.FirstOrDefault(u => u.Id == model.Id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Name) && user.Name != model.Name)
+                {
+                    user.Name = model.Name;
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Surname) && user.Surname != model.Surname)
+                {
+                    user.Surname = model.Surname;
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Patronymic) && user.Patronymic != model.Patronymic)
+                {
+                    user.Patronymic = model.Patronymic;
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Email) && user.Email != model.Email)
+                {
+                    var existingUserWithEmail = _context.User.FirstOrDefault(u => u.Email == model.Email);
+                    if (existingUserWithEmail != null && existingUserWithEmail.Id != user.Id)
+                    {
+                        ModelState.AddModelError("Email", "Пользователь с таким Email уже существует.");
+                        return View("ProfileEditor", model);
+                    }
+                    user.Email = model.Email;
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Phone) && user.Phone != model.Phone)
+                {
+                    var existingUserWithPhone = _context.User.FirstOrDefault(u => u.Phone == model.Phone);
+                    if (existingUserWithPhone != null && existingUserWithPhone.Id != user.Id)
+                    {
+                        ModelState.AddModelError("Phone", "Пользователь с таким номером телефона уже существует.");
+                        return View("ProfileEditor", model);
+                    }
+                    user.Phone = model.Phone;
+                }
+
+                if (model.Password != null) 
+                {
+                    user.Password = model.Password;
+                }
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Profile", "Control");
+            }
+
+            return View("ProfileEditor", model);
+        }
+
+
+
         [HttpPost]
         public IActionResult AddProduct(ProductViewModel viewModel)
         {

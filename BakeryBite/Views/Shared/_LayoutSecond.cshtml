@@ -11,7 +11,9 @@
     <header>
         <nav>
             <ul>
-                <img src="~/img/BakeryBiteLogoCroissant.png" alt="BakeryBite Logo" class="s_logo" width="30px" height="30px">
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/img/BakeryBiteLogoCroissant.png" alt="BakeryBite Logo" class="s_logo" width="30px" height="30px">
+                </a>
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Index">Домой</a>
                 </li>
@@ -46,6 +48,7 @@
             <a asp-area="" asp-controller="Sections" asp-action="Contacts">Контакты</a>
         </div>
     </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 

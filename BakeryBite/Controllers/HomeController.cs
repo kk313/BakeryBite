@@ -154,39 +154,45 @@ namespace BakeryBite.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string firstName, string lastName, string middleName, string email, string phoneNumber, string userName, string password)
+        public IActionResult Register(User user)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(phoneNumber) || string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
+            var existingEmail = _context.User.FirstOrDefault(u => u.Email == user.Email);
+            if (existingEmail != null)
             {
-                ModelState.AddModelError(string.Empty, "Необходимо заполнить все обязательные поля.");
-                return View("Registration"); 
+                ModelState.AddModelError("Email", "Пользователь с таким Email уже существует.");
+                return View("Registration", user);
+            }
+
+            var existingPhone = _context.User.FirstOrDefault(u => u.Phone == user.Phone);
+            if (existingPhone != null)
+            {
+                ModelState.AddModelError("Phone", "Пользователь с таким номером телефона уже существует.");
+                return View("Registration", user);
+            }
+
+            var existingLogin = _context.User.FirstOrDefault(u => u.Login == user.Login);
+            if (existingLogin != null)
+            {
+                ModelState.AddModelError("Login", "Пользователь с таким логином уже существует.");
+                return View("Registration", user);
             }
 
             try
             {
-                var user = new User
-                {
-                    Name = firstName,
-                    Surname = lastName,
-                    Patronymic = middleName,
-                    Email = email,
-                    Phone = phoneNumber,
-                    Login = userName,
-                    Password = password,
-                    RoleId = 4
-                };
-
+                user.RoleId = 4;
                 _context.User.Add(user);
                 _context.SaveChanges();
 
                 return RedirectToAction("Authorize");
             }
+
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Ошибка сохранения данных: {ex.Message}");
-                return View("Registration"); 
             }
+            return View("Registration", user);
         }
+
 
         public IActionResult ShoppingCart()
         {
