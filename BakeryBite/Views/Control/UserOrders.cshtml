@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Мои заказы";
+    Layout = "_LayoutSecond";
+}
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/OrderEditor.css" />
+@model List<BakeryBite.Models.Order>
+
+<h1>Мои заказы</h1>
+
+@if (Model != null && Model.Count > 0)
+{
+    <div class="order-list">
+        @foreach (var order in Model)
+        {
+            <div class="order-item">
+                <h2 class="order-title">Заказ # @order.Id</h2>
+                <p>Дата заказа: @order.OrderDate</p>
+                <p>Сумма заказа: @order.TotalAmount руб.</p>
+                <p>Адрес доставки: @order.Address</p>
+                <p>
+                    Статус заказа:
+                    @if (order.IsCompleted == 1)
+                    {
+                        <span class="status-completed">Оформлен</span>
+                    }
+                    else if (order.IsCompleted == 2)
+                    {
+                        <span class="status-rejected">Отклонён</span>
+                    }
+                    else
+                    {
+                        <span class="status-pending">Не завершён</span>
+                    }
+                </p>
+                <p>
+                    <a href="@Url.Action("OrderItems", "Control", new { orderId = order.Id })">Подробнее</a>
+                </p>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Нет заказов.</p>
+}

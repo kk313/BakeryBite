@@ -11,7 +11,7 @@
         <div class="category-button">
             <form method="get" action="@Url.Action(categoryViewModel.CategoryName, "Home")">
                 <input type="hidden" name="categoryName" value="@categoryViewModel.CategoryName" />
-                <button type="submit" class="category-button-content" style="background-image: url('data:image;base64,@categoryViewModel.Avatar');">
+                <button type="submit" class="category-button-content" style="background-image: url('data:image;base64,@categoryViewModel.ImageTitle');">
                     <span>@categoryViewModel.CategoryRuName</span>
                 </button>
             </form>

@@ -1,7 +1,9 @@
-﻿@{
+﻿@model BakeryBite.Data.FoodViewModel
+
+@{
     ViewData["Title"] = "Напитки";
 }
-@model List<Product>
+
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodTemplate.css" />
 
 <main class="grid-container">
@@ -11,12 +13,12 @@
                 <img src="~/img/Subtract.svg" alt="Изображение">
             </button>
         </form>
-        <h1 class="start">Напитки</h1>
+        <h1 class="start">@Model.Category.Name</h1>
     </div>
     <div class="grid-item">
-        @if (Model.Any())
+        @if (Model.Products.Any())
         {
-            @foreach (var product in Model)
+            @foreach (var product in Model.Products)
             {
                 <div class="base">
                     <div class="image">
@@ -42,6 +44,10 @@
         }
     </div>
 </main>
+
+<div class="background-container" style="background-image: url('data:image/jpeg;base64,@Model.Category.ImageBack');">
+    <div class="overlay"></div>
+</div>
 
 <script>
     var activePanels = [];

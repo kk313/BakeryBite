@@ -75,6 +75,13 @@ namespace BakeryBite.Controllers
             return View(orderItems);
         }
 
+        public IActionResult UserOrders(int userId)
+        {
+            List<Order> userOrders = _context.Order.Where(o => o.UserId == userId).ToList();
+            return View("UserOrders", userOrders);
+        }
+
+
         public IActionResult ProductsEditor()
         {
             var products = _context.Product.ToList();

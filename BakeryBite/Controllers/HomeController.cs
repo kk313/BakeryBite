@@ -32,6 +32,12 @@ namespace BakeryBite.Controllers
 
             foreach (var categoryId in categoryIds)
             {
+                var category = _context.Category.FirstOrDefault(c => c.Id == categoryId);
+                if (category == null)
+                {
+                    continue;
+                }
+
                 string categoryName = $"Food{categoryId}";
 
                 var randomProduct = _context.Product
@@ -45,7 +51,8 @@ namespace BakeryBite.Controllers
                     {
                         CategoryName = categoryName,
                         CategoryRuName = GetCategoryRuName(categoryName),
-                        Avatar = randomProduct.Avatar
+                        Avatar = randomProduct.Avatar,
+                        ImageTitle = category.ImageTitle
                     };
 
                     categoryViewModels.Add(categoryViewModel);
@@ -77,50 +84,128 @@ namespace BakeryBite.Controllers
 
         public IActionResult Food1()
         {
-            var foodItems = _context.Product
-            .Where(p => p.CategoryId == 1)
-            .ToList();
-            return View(foodItems);
+            var category = _context.Category.FirstOrDefault(c => c.Name == "Хлеб");
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Product
+                .Where(p => p.CategoryId == category.Id)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Category = category,
+                Products = products
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Food2()
         {
-            var foodItems = _context.Product
-            .Where(p => p.CategoryId == 2)
-            .ToList();
-            return View(foodItems);
+            var category = _context.Category.FirstOrDefault(c => c.Name == "Торты");
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Product
+                .Where(p => p.CategoryId == category.Id)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Category = category,
+                Products = products
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Food3()
         {
-            var foodItems = _context.Product
-            .Where(p => p.CategoryId == 3)
-            .ToList();
-            return View(foodItems);
+            var category = _context.Category.FirstOrDefault(c => c.Name == "Печенье");
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Product
+                .Where(p => p.CategoryId == category.Id)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Category = category,
+                Products = products
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Food4()
         {
-            var foodItems = _context.Product
-            .Where(p => p.CategoryId == 4)
-            .ToList();
-            return View(foodItems);
+            var category = _context.Category.FirstOrDefault(c => c.Name == "Сладости");
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Product
+                .Where(p => p.CategoryId == category.Id)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Category = category,
+                Products = products
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Food5()
         {
-            var foodItems = _context.Product
-            .Where(p => p.CategoryId == 5)
-            .ToList();
-            return View(foodItems);
+            var category = _context.Category.FirstOrDefault(c => c.Name == "Пироги");
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Product
+                .Where(p => p.CategoryId == category.Id)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Category = category,
+                Products = products
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Food6()
         {
-            var foodItems = _context.Product
-            .Where(p => p.CategoryId == 6)
-            .ToList();
-            return View(foodItems);
+            var category = _context.Category.FirstOrDefault(c => c.Name == "Напитки");
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Product
+                .Where(p => p.CategoryId == category.Id)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Category = category,
+                Products = products
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Authorize()

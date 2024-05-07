@@ -27,6 +27,7 @@
                 <button type="button" class="btn btn-primary" onclick="redirectToOrderEditor()">Заказы</button>
             }
             <button type="button" class="btn btn-primary" onclick="redirectToProfileEditor()">Редактирование профиля</button>
+            <button type="button" class="btn btn-primary" onclick="redirectToUserOrders(@Model.Id)">Мои заказы</button>
             <a href="@Url.Action("Logout", "Control")" class="btn btn-danger">Выход</a>
         </div>
     </div>
@@ -43,5 +44,9 @@
 
     function redirectToProfileEditor() {
         window.location.href = '@Url.Action("ProfileEditor", "Control")';
+    }
+
+    function redirectToUserOrders(userId) {
+        window.location.href = '@Url.Action("UserOrders", "Control")' + '?userId=' + userId;
     }
 </script>

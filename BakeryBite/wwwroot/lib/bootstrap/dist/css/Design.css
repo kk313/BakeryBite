@@ -61,7 +61,7 @@ footer {
     border-top: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-    color: #888;
+    background-color: #fff;
     width: 100%;
     display: grid;
     grid-template-columns: 25% 50% 25%;

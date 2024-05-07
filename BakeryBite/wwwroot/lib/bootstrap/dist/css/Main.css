@@ -51,7 +51,3 @@
         filter: blur(3px);
         transition: filter 0.3s;
     }
-
-    .category-button-content:hover img {
-        filter: none;
-    }
