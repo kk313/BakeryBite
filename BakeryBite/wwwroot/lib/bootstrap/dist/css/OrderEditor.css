@@ -8,16 +8,23 @@
         width: 30%;
     }
 
-.order-list .order-item {
+.order-list {
+    display: grid;
+    gap: 20px;
+}
+
+.order-item {
+    display: grid;
+    grid-template-rows: auto auto auto; /* Три строки */
+    gap: 20px;
     background-color: #f9f9f9;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
-    margin-bottom: 20px;
 }
 
-    .order-list .order-item:hover {
+    .order-item:hover {
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
@@ -26,6 +33,28 @@
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
+}
+
+/* Стили для первой строки (заголовок) */
+.title-row {
+    display: grid;
+    grid-template-columns: 1fr; /* Одна колонка */
+}
+
+/* Стили для второй строки (детали) */
+.details-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Две колонки */
+    gap: 20px;
+}
+
+/* Стили для третьей строки (кнопки) */
+.buttons-row {
+    display: grid;
+    grid-template-columns: 1fr; /* Одна колонка */
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали */
+    margin-top: 10px;
 }
 
 .order-actions {

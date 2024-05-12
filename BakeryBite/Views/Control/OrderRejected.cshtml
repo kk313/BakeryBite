@@ -21,28 +21,45 @@
         {
             <div class="order-item">
                 <h2 class="order-title">Заказ # @order.Id</h2>
-                <p>Дата заказа: @order.OrderDate</p>
-                <p>Сумма заказа: @order.TotalAmount руб.</p>
-                <p>Адрес доставки: @order.Address</p>
-                <p>Номер телефона: @order.Phone</p>
-                <p>
-                    Статус заказа:
-                    @if (order.IsCompleted == 1)
-                    {
-                        <span class="status-completed">Оформлен</span>
-                    }
-                    else if (order.IsCompleted == 2)
-                    {
-                        <span class="status-rejected">Отклонен</span>
-                    }
-                    else
-                    {
-                        <span class="status-pending">Не завершен</span>
-                    }
-                </p>
-                <p>
-                    <a href="@Url.Action("OrderItems", "Control", new { orderId = order.Id })">Подробнее</a>
-                </p>
+                <div class="details-row">
+                    <div>
+                        <p><strong>Дата заказа:</strong> @order.OrderDate</p>
+                        <p><strong>Сумма заказа:</strong> @order.TotalAmount руб.</p>
+                        <p>
+                            <strong>Статус заказа:</strong>
+                            @if (order.IsCompleted == 1)
+                            {
+                                <span class="status-completed">Оформлен</span>
+                            }
+                            else if (order.IsCompleted == 2)
+                            {
+                                <span class="status-rejected">Отклонен</span>
+                            }
+                            else
+                            {
+                                <span class="status-pending">Не завершен</span>
+                            }
+                        </p>
+                        <p><strong>Способ оплаты:</strong> @order.PaymentMethod</p>
+                    </div>
+                    <div>
+                        <p><strong>Адрес доставки:</strong> @order.Address</p>
+                        <p><strong>Номер телефона:</strong> @order.Phone</p>
+                        @{
+                            string recipientName = string.Empty;
+                            if (order.UserId.HasValue && order.User != null)
+                            {
+                                recipientName = $"{order.User.Surname} {order.User.Name} {order.User.Patronymic}";
+                            }
+                            else
+                            {
+                                recipientName = order.Name;
+                            }
+                        }
+                        <p><strong>Получатель:</strong> @recipientName</p>
+                        <p><strong>Подробнее:</strong> <a href="@Url.Action("OrderItems", "Control", new { orderId = order.Id })">Подробнее</a></p>
+                    </div>
+                </div>
             </div>
         }
     </div>

@@ -66,6 +66,18 @@ namespace BakeryBite.Controllers
             return View(categoryViewModels);
         }
 
+        public int? GetRoleIdByUserId(int userId)
+        {
+            var user = _context.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user != null)
+            {
+                return user.RoleId;
+            }
+
+            return null;
+        }
+
         private string GetCategoryRuName(string categoryName)
         {
             if (categoryName.StartsWith("Food"))
@@ -349,7 +361,19 @@ namespace BakeryBite.Controllers
 
         public IActionResult OrderConfirmation()
         {
-            return View();
+            var model = new OrderConfirmationViewModel();
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId != null)
+            {
+                var user = _context.User.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                {
+                    model.RoleId = user.RoleId;
+                }
+            }
+
+            return View(model);
         }
 
         [HttpPost]
@@ -363,11 +387,13 @@ namespace BakeryBite.Controllers
                 {
                     var user = _context.User.FirstOrDefault(u => u.Id == userId);
 
-                    if (user != null)
+                    var userRole = _context.Role.FirstOrDefault(r => r.Id == user.RoleId && r.Id == 4);
+
+                    if (userRole != null)
                     {
                         model.Name = user.Name;
                         model.Email = user.Email;
-                        model.Phone = user.Phone.ToString(); 
+                        model.Phone = user.Phone.ToString();
                     }
                 }
 
@@ -409,7 +435,6 @@ namespace BakeryBite.Controllers
 
             return View("OrderConfirmation", model);
         }
-
 
         private decimal CalculateTotalAmount()
         {

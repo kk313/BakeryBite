@@ -27,7 +27,10 @@
                 <button type="button" class="btn btn-primary" onclick="redirectToOrderEditor()">Заказы</button>
             }
             <button type="button" class="btn btn-primary" onclick="redirectToProfileEditor()">Редактирование профиля</button>
-            <button type="button" class="btn btn-primary" onclick="redirectToUserOrders(@Model.Id)">Мои заказы</button>
+            @if (Model.Role.Name == "Пользователь")
+            {
+                <button type="button" class="btn btn-primary" onclick="redirectToUserOrders(@Model.Id)">Мои заказы</button>
+            }
             <a href="@Url.Action("Logout", "Control")" class="btn btn-danger">Выход</a>
         </div>
     </div>

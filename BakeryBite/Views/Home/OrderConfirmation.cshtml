@@ -3,17 +3,15 @@
 @{
     ViewData["Title"] = "Подтверждение заказа";
     Layout = "_Layout";
+
+    var userId = Context.Session.GetInt32("UserId");
 }
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/EditorTemplate.css" />
 
 <h1>Оформление заказа</h1>
 
-@{
-    var userId = Context.Session.GetInt32("UserId");
-}
-
 <form method="post" asp-action="ConfirmOrder" asp-controller="Home">
-    @if (userId != null)
+    @if (Model.RoleId == 4)
     {
         <div class="form-group">
             <label asp-for="Address">Адрес доставки:</label>
