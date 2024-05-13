@@ -436,6 +436,46 @@ namespace BakeryBite.Controllers
             return View("OrderConfirmation", model);
         }
 
+        [HttpPost]
+        public IActionResult ChangeCartItemQuantity(int productId, int change)
+        {
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            CartItem existingItem = cart.items.FirstOrDefault(item => item.ProductId == productId);
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity += change;
+
+                if (existingItem.Quantity <= 0)
+                {
+                    cart.items.Remove(existingItem);
+                }
+
+                ShoppingCartHelper.SaveCart(HttpContext, cart);
+
+                var totalQuantity = cart.items.Sum(item => item.Quantity);
+                var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
+                var itemQuantity = existingItem.Quantity;
+
+                return Json(new { totalQuantity, totalCost, itemQuantity });
+            }
+
+            return NotFound();
+        }
+
+
+        [HttpGet]
+        public IActionResult GetCartSummary()
+        {
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            var totalQuantity = cart.items.Sum(item => item.Quantity);
+            var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
+
+            return Json(new { totalQuantity, totalCost });
+        }
+
         private decimal CalculateTotalAmount()
         {
             var cart = ShoppingCartHelper.GetCart(HttpContext);

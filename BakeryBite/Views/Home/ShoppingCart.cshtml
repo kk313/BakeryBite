@@ -18,12 +18,13 @@
                     </div>
                     <div class="text">
                         <p class="product-name">@item.Product.Name</p>
-                        <p class="product-quantity">Количество: @item.Quantity</p>
+                        <p class="product-quantity">Количество: <span id="quantity-@item.Product.Id">@item.Quantity</span></p>
                     </div>
                     <p class="product-price">Цена: @item.Product.Cost руб.</p>
-                    <button type="button" class="remove-button" onclick="removeFromCart(@item.Product.Id)">
-                        <img src="~/img/Remove.svg" alt="Изображение">
-                    </button>
+                    <div class="quantity-buttons">
+                        <button type="button" class="add-button" onclick="changeQuantity(@item.Product.Id, 1)">+</button>
+                        <button type="button" class="remove-button" onclick="changeQuantity(@item.Product.Id, -1)">-</button>
+                    </div>
                 </div>
             }
         }
@@ -37,8 +38,8 @@
     {
         <div class="cart-summary">
             <h3>Итоговая информация</h3>
-            <p>Количество товаров: @Model.Sum(item => item.Quantity)</p>
-            <p>Итоговая стоимость: @Model.Sum(item => item.Quantity * item.Product.Cost) руб.</p>
+            <p>Количество товаров: <span id="total-quantity">@Model.Sum(item => item.Quantity)</span></p>
+            <p>Итоговая стоимость: <span id="total-cost">@Model.Sum(item => item.Quantity * item.Product.Cost)</span> руб.</p>
             <form method="post" asp-controller="Home" asp-action="OrderConfirmation">
                 <button type="submit" class="checkout-button">Оформить заказ</button>
             </form>
@@ -48,19 +49,39 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function removeFromCart(productId) {
-        if (confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-            $.ajax({
-                url: '@Url.Action("RemoveFromCart", "Home")',
-                type: 'POST',
-                data: { productId: productId },
-                success: function () {
-                    location.reload();
-                },
-                error: function () {
-                    alert('Ошибка при удалении товара из корзины.');
-                }
-            });
+    function changeQuantity(productId, change) {
+        var quantityElement = $('#quantity-' + productId);
+        var currentQuantity = parseInt(quantityElement.text());
+
+        if (currentQuantity === 1 && change === -1) {
+            if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
+                return; 
+            }
         }
+
+        $.ajax({
+            url: '@Url.Action("ChangeCartItemQuantity", "Home")',
+            type: 'POST',
+            data: { productId: productId, change: change },
+            success: function (data) {
+                $('#total-quantity').text(data.totalQuantity);
+                $('#total-cost').text(data.totalCost);
+
+                var quantity = data.itemQuantity;
+
+                if (quantity <= 0) {
+                    quantityElement.closest('.base').remove();
+                } else {
+                    quantityElement.text(quantity);
+                }
+
+                if (data.totalQuantity <= 0) {
+                    location.reload();
+                }
+            },
+            error: function () {
+                alert('Ошибка при изменении количества товара в корзине.');
+            }
+        });
     }
 </script>

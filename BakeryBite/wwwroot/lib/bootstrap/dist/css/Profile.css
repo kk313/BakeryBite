@@ -44,3 +44,15 @@
     .action-buttons .btn {
         margin-bottom: 10px;
     }
+
+a.logout {
+    color: black;
+    text-decoration: none;
+    transition: color 0.5s, filter 0.5s;
+}
+
+    a.logout:hover,
+    a.logout:focus {
+        color: wheat;
+        filter: brightness(0.9);
+    }
