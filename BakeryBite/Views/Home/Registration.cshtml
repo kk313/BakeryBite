@@ -27,13 +27,13 @@
 
                 <div class="form-group">
                     <label asp-for="Email">Почта</label>
-                    <input asp-for="Email" class="form-control" placeholder="Введите вашу почту" required>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="Введите вашу почту" required>
                     <span asp-validation-for="Email" class="text-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Phone">Номер телефона</label>
-                    <input asp-for="Phone" class="form-control" placeholder="Введите ваш номер телефона" required pattern="[0-9]{11}" title="Номер телефона должен состоять из 11 цифр">
+                    <input asp-for="Phone" class="form-control" placeholder="Введите ваш номер телефона" required pattern="[0-9]{11}" title="Номер телефона должен состоять из 11 цифр" type="tel">
                     <span asp-validation-for="Phone" class="text-error"></span>
                 </div>
 
@@ -45,7 +45,7 @@
 
                 <div class="form-group">
                     <label asp-for="Password">Пароль</label>
-                    <input asp-for="Password" class="form-control" placeholder="Введите ваш пароль" required
+                    <input asp-for="Password" class="form-control" placeholder="Введите ваш пароль" required type="password"
                            pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*"
                            title="Пароль должен содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ. Минимальная длина - 8 символов."
                            maxlength="32" minlength="8" title="Пароль должен быть не менее 8 символов и содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ">

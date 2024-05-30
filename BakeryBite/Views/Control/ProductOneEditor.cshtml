@@ -13,25 +13,29 @@
 
     <div class="form-group">
         <label asp-for="Product.Name">Название товара:</label>
-        <input asp-for="Product.Name" class="form-control" />
+        <input asp-for="Product.Name" class="form-control" placeholder="Введите название товара"
+               required maxlength="64" title="Название должно быть не длиннее 64 символов" pattern="^[а-яА-Яa-zA-Z ]+$">
         <span asp-validation-for="Product.Name" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Product.Weight">Вес товара (г):</label>
-        <input asp-for="Product.Weight" class="form-control" value="@Convert.ToInt32(Model.Product.Weight)" />
+        <input asp-for="Product.Weight" class="form-control" value="@Convert.ToInt32(Model.Product.Weight)"
+               placeholder="Введите стоимость товара" required maxlength="9" title="Вес должен содержать только цифры" pattern="^[0-9]+$" />
         <span asp-validation-for="Product.Weight" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Product.Description">Описание товара:</label>
-        <textarea asp-for="Product.Description" class="form-control"></textarea>
+        <textarea asp-for="Product.Description" class="form-control" placeholder="Введите описание товара"
+                  required maxlength="128" title="Описание должно быть не длиннее 128 символов" pattern="^[а-яА-Яa-zA-Z ]+$"></textarea>
         <span asp-validation-for="Product.Description" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Product.Cost">Стоимость товара (руб.):</label>
-        <input asp-for="Product.Cost" class="form-control" value="@Model.Product.Cost.ToString("0")" />
+        <input asp-for="Product.Cost" class="form-control" placeholder="Введите стоимость товара" value="@Model.Product.Cost.ToString("0")"
+               required maxlength="9" title="Вес должен содержать только цифры" pattern="^[0-9]+$">
         <span asp-validation-for="Product.Cost" class="text-danger"></span>
     </div>
 
