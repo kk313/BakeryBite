@@ -18,7 +18,10 @@
                     </div>
                     <div class="text">
                         <p class="product-name">@item.Product.Name</p>
-                        <p class="product-quantity">Количество: <span id="quantity-@item.Product.Id">@item.Quantity</span></p>
+                        <p class="product-quantity">
+                            Количество: <input type="number" id="quantity-@item.Product.Id" value="@item.Quantity" min="1" data-initial-quantity="@item.Quantity" onchange="changeQuantityManual(@item.Product.Id, this.value)">
+                        </p>
+
                     </div>
                     <p class="product-price">Цена: @item.Product.Cost руб.</p>
                     <div class="quantity-buttons">
@@ -51,37 +54,82 @@
 <script>
     function changeQuantity(productId, change) {
         var quantityElement = $('#quantity-' + productId);
-        var currentQuantity = parseInt(quantityElement.text());
+        var currentQuantity = parseInt(quantityElement.val());
+        var newValue = currentQuantity + change;
 
-        if (currentQuantity === 1 && change === -1) {
+        if (newValue <= 0 && currentQuantity === 1) {
             if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-                return; 
+                return;
+            } else {
+                removeItemFromCart(productId);
+                return;
             }
         }
 
+        quantityElement.val(newValue);
+        sendChangeQuantityRequest(productId, change);
+    }
+
+
+    function changeQuantityManual(productId, value) {
+        var quantityElement = $('#quantity-' + productId);
+        var initialQuantity = parseInt(quantityElement.attr('data-initial-quantity')) || 0; 
+        var newValue = parseInt(value);
+
+        if (isNaN(newValue) || newValue < 0) {
+            alert('Количество должно быть числом больше или равным 0.');
+            quantityElement.val(initialQuantity); 
+            return;
+        }
+
+        var change = newValue - initialQuantity;
+
+        if (newValue === 0 || newValue <= 0) {
+            if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
+                quantityElement.val(initialQuantity); 
+                return;
+            } else {
+                removeItemFromCart(productId);
+                return;
+            }
+        }
+
+        quantityElement.attr('data-initial-quantity', newValue);
+
+        sendChangeQuantityRequest(productId, change);
+    }
+
+
+    function sendChangeQuantityRequest(productId, quantity) {
         $.ajax({
-            url: '@Url.Action("ChangeCartItemQuantity", "Home")',
+            url: '/Home/ChangeCartItemQuantity',
             type: 'POST',
-            data: { productId: productId, change: change },
+            data: { productId: productId, change: quantity },
             success: function (data) {
                 $('#total-quantity').text(data.totalQuantity);
                 $('#total-cost').text(data.totalCost);
-
-                var quantity = data.itemQuantity;
-
-                if (quantity <= 0) {
-                    quantityElement.closest('.base').remove();
-                } else {
-                    quantityElement.text(quantity);
-                }
-
-                if (data.totalQuantity <= 0) {
-                    location.reload();
-                }
+                location.reload();
             },
             error: function () {
                 alert('Ошибка при изменении количества товара в корзине.');
             }
         });
     }
+
+    function removeItemFromCart(productId) {
+        $.ajax({
+            url: '/Home/ChangeCartItemQuantity',
+            type: 'POST',
+            data: { productId: productId, change: -999 },
+            success: function (data) {
+                $('#total-quantity').text(data.totalQuantity);
+                $('#total-cost').text(data.totalCost);
+                location.reload();
+            },
+            error: function () {
+                alert('Ошибка при удалении товара из корзины.');
+            }
+        });
+    }
+
 </script>

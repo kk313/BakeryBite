@@ -4,6 +4,7 @@ using BakeryBite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace BakeryBite.Controllers
@@ -81,11 +82,34 @@ namespace BakeryBite.Controllers
             return View("UserOrders", userOrders);
         }
 
-
-        public IActionResult ProductsEditor()
+        public IActionResult ProductsEditor(string searchTerm = "", int page = 1, int pageSize = 9)
         {
-            var products = _context.Product.ToList();
-            return View(products);
+            var products = _context.Product.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                products = products.Where(p => p.Name.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            var totalItems = products.Count();
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var items = products
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var viewModel = new FoodViewModel
+            {
+                Products = items,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                ActionName = nameof(ProductsEditor),
+                SearchTerm = searchTerm
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult ProductOneEditor(int productId)

@@ -94,131 +94,68 @@ namespace BakeryBite.Controllers
             return categoryName;
         }
 
-        public IActionResult Food1()
+        private IActionResult HandleFoodCategory(string categoryName, int page, int pageSize, string actionName)
         {
-            var category = _context.Category.FirstOrDefault(c => c.Name == "Хлеб");
+            var category = _context.Category.FirstOrDefault(c => c.Name == categoryName);
             if (category == null)
             {
                 return NotFound();
             }
 
+            var totalItems = _context.Product
+                .Count(p => p.CategoryId == category.Id);
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
             var products = _context.Product
                 .Where(p => p.CategoryId == category.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
             var viewModel = new FoodViewModel
             {
                 Category = category,
-                Products = products
+                Products = products,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                PageSize = pageSize,
+                ActionName = actionName
             };
 
-            return View(viewModel);
+            return View("FoodTemplate", viewModel);
         }
 
-        public IActionResult Food2()
+        public IActionResult Food1(int page = 1, int pageSize = 10)
         {
-            var category = _context.Category.FirstOrDefault(c => c.Name == "Торты");
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            var products = _context.Product
-                .Where(p => p.CategoryId == category.Id)
-                .ToList();
-
-            var viewModel = new FoodViewModel
-            {
-                Category = category,
-                Products = products
-            };
-
-            return View(viewModel);
+            return HandleFoodCategory("Хлеб", page, pageSize, nameof(Food1));
         }
 
-        public IActionResult Food3()
+        public IActionResult Food2(int page = 1, int pageSize = 10)
         {
-            var category = _context.Category.FirstOrDefault(c => c.Name == "Печенье");
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            var products = _context.Product
-                .Where(p => p.CategoryId == category.Id)
-                .ToList();
-
-            var viewModel = new FoodViewModel
-            {
-                Category = category,
-                Products = products
-            };
-
-            return View(viewModel);
+            return HandleFoodCategory("Торты", page, pageSize, nameof(Food2));
         }
 
-        public IActionResult Food4()
+        public IActionResult Food3(int page = 1, int pageSize = 10)
         {
-            var category = _context.Category.FirstOrDefault(c => c.Name == "Сладости");
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            var products = _context.Product
-                .Where(p => p.CategoryId == category.Id)
-                .ToList();
-
-            var viewModel = new FoodViewModel
-            {
-                Category = category,
-                Products = products
-            };
-
-            return View(viewModel);
+            return HandleFoodCategory("Печенье", page, pageSize, nameof(Food3));
         }
 
-        public IActionResult Food5()
+        public IActionResult Food4(int page = 1, int pageSize = 10)
         {
-            var category = _context.Category.FirstOrDefault(c => c.Name == "Пироги");
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            var products = _context.Product
-                .Where(p => p.CategoryId == category.Id)
-                .ToList();
-
-            var viewModel = new FoodViewModel
-            {
-                Category = category,
-                Products = products
-            };
-
-            return View(viewModel);
+            return HandleFoodCategory("Сладости", page, pageSize, nameof(Food4));
         }
 
-        public IActionResult Food6()
+        public IActionResult Food5(int page = 1, int pageSize = 10)
         {
-            var category = _context.Category.FirstOrDefault(c => c.Name == "Напитки");
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            var products = _context.Product
-                .Where(p => p.CategoryId == category.Id)
-                .ToList();
-
-            var viewModel = new FoodViewModel
-            {
-                Category = category,
-                Products = products
-            };
-
-            return View(viewModel);
+            return HandleFoodCategory("Пироги", page, pageSize, nameof(Food5));
         }
+
+        public IActionResult Food6(int page = 1, int pageSize = 10)
+        {
+            return HandleFoodCategory("Напитки", page, pageSize, nameof(Food6));
+        }
+
 
         public IActionResult Authorize()
         {

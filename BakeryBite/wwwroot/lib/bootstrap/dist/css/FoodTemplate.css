@@ -168,3 +168,37 @@ form {
     cursor: pointer;
     font-size: 14px;
 }
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.page-link {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #333;
+    background-color: #fff;
+    transition: all .5s;
+}
+
+    .page-link.active {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+    .page-link:hover {
+        transition: all .5s;
+        color: #333;
+    }
+
+    .page-link.active:hover {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }

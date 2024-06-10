@@ -34,7 +34,7 @@
     }
 }
 
-@functions{
+@functions {
     public string GetCategoryRuName(string categoryName)
     {
         return categoryName switch
@@ -45,7 +45,7 @@
             "Food4" => "Сладости",
             "Food5" => "Пироги",
             "Food6" => "Напитки",
-            _ => categoryName 
+            _ => categoryName
         };
     }
 }
@@ -59,6 +59,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" />
 </head>
 <body>
+    <div id="page-loader"></div>
     <header>
         <nav>
             <ul>
@@ -95,7 +96,6 @@
         </nav>
     </header>
 
-
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -104,7 +104,7 @@
 
     <footer>
         <div class="container footer-left">
-            <img src="~/img/BakeryBiteLogo.png" alt="BakeryBite Logo" class="logo" width="200px" height="auto   ">
+            <img src="~/img/BakeryBiteLogo.png" alt="BakeryBite Logo" class="logo" width="200px" height="auto">
             &copy; 2024 - BakeryBite
         </div>
         <div class="footer-center">
@@ -113,8 +113,27 @@
             <a asp-area="" asp-controller="Sections" asp-action="FAQ">Часто задаваемые вопросы</a>
         </div>
     </footer>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).ajaxStart(function () {
+                $('#page-loader').addClass('loading');
+            });
+
+            $(document).ajaxStop(function () {
+                $('#page-loader').removeClass('loading');
+            });
+
+            $(window).on('beforeunload', function () {
+                $('#page-loader').addClass('loading');
+            });
+
+            $(window).on('load', function () {
+                $('#page-loader').removeClass('loading');
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
