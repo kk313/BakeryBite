@@ -41,8 +41,8 @@
 
     <div class="form-group">
         <label asp-for="Product.CategoryId">Категория товара:</label>
-        <select asp-for="Product.CategoryId" asp-items="@Model.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() })" class="form-control">
-            <option value="">Выберите категорию</option>
+        <select asp-for="Product.CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-control">
+            <option value="" disabled selected>Выберите категорию</option>
         </select>
         <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
     </div>
@@ -50,7 +50,6 @@
     <div class="form-group">
         <label asp-for="Image" class="control-label">Изображение товара:</label>
         <input type="file" id="Image" name="Image" accept="image/*" class="form-control-file" />
-        <span asp-validation-for="Image" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Сохранить</button>

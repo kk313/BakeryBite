@@ -48,12 +48,16 @@
                     <input asp-for="Password" class="form-control" placeholder="Введите ваш пароль" required type="password"
                            pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*"
                            title="Пароль должен содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ. Минимальная длина - 8 символов."
-                           maxlength="32" minlength="8" title="Пароль должен быть не менее 8 символов и содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ">
+                           maxlength="32" minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="agreeToPolicy" name="AgreeToPolicy" required>
+                    <label for="agreeToPolicy">Я согласен с <a href="/Sections/PrivacyPolicy" target="_blank">Политикой конфиденциальности</a> и условиями обработки данных</label>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
             </form>
-
         </div>
     </div>
 </main>

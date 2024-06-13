@@ -190,24 +190,32 @@ namespace BakeryBite.Controllers
         [HttpPost]
         public IActionResult Register(User user)
         {
+            var agreeToPolicy = Request.Form["AgreeToPolicy"].ToString();
+            if (string.IsNullOrEmpty(agreeToPolicy) || agreeToPolicy.ToLower() != "on")
+            {
+                ModelState.AddModelError("AgreeToPolicy", "Вы должны согласиться с политикой конфиденциальности.");
+            }
+
             var existingEmail = _context.User.FirstOrDefault(u => u.Email == user.Email);
             if (existingEmail != null)
             {
                 ModelState.AddModelError("Email", "Пользователь с таким Email уже существует.");
-                return View("Registration", user);
             }
 
             var existingPhone = _context.User.FirstOrDefault(u => u.Phone == user.Phone);
             if (existingPhone != null)
             {
                 ModelState.AddModelError("Phone", "Пользователь с таким номером телефона уже существует.");
-                return View("Registration", user);
             }
 
             var existingLogin = _context.User.FirstOrDefault(u => u.Login == user.Login);
             if (existingLogin != null)
             {
                 ModelState.AddModelError("Login", "Пользователь с таким логином уже существует.");
+            }
+
+            if (!ModelState.IsValid)
+            {
                 return View("Registration", user);
             }
 
@@ -219,14 +227,12 @@ namespace BakeryBite.Controllers
 
                 return RedirectToAction("Authorize");
             }
-
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Ошибка сохранения данных: {ex.Message}");
+                return View("Registration", user);
             }
-            return View("Registration", user);
         }
-
 
         public IActionResult ShoppingCart()
         {

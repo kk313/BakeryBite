@@ -153,7 +153,7 @@ namespace BakeryBite.Controllers
             var user = _context.User.FirstOrDefault(u => u.Id == userId);
             if (user == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             return View(user);
@@ -162,7 +162,7 @@ namespace BakeryBite.Controllers
         [HttpPost]
         public IActionResult UpdateUser(User model)
         {
-            if (ModelState.IsValid || string.IsNullOrEmpty(model.Password)) 
+            if (ModelState.IsValid || string.IsNullOrEmpty(model.Password))
             {
                 var user = _context.User.FirstOrDefault(u => u.Id == model.Id);
                 if (user == null)
@@ -207,7 +207,7 @@ namespace BakeryBite.Controllers
                     user.Phone = model.Phone;
                 }
 
-                if (model.Password != null) 
+                if (model.Password != null)
                 {
                     user.Password = model.Password;
                 }
@@ -225,6 +225,13 @@ namespace BakeryBite.Controllers
         [HttpPost]
         public IActionResult AddProduct(ProductViewModel viewModel)
         {
+            if (viewModel.Product.CategoryId == null || viewModel.Product.CategoryId == 0)
+            {
+                ModelState.AddModelError("Product.CategoryId", "Пожалуйста, выберите категорию.");
+                viewModel.Categories = _context.Category.ToList();
+                return View("ProductOneAdder", viewModel);
+            }
+
             if (!CheckInput(viewModel))
             {
                 viewModel.Categories = _context.Category.ToList();
@@ -239,7 +246,7 @@ namespace BakeryBite.Controllers
                     Weight = viewModel.Product.Weight,
                     Description = viewModel.Product.Description,
                     Cost = viewModel.Product.Cost,
-                    CategoryId = viewModel.Product.CategoryId
+                    CategoryId = viewModel.Product.CategoryId 
                 };
 
                 if (viewModel.Image != null && viewModel.Image.Length > 0)
@@ -263,6 +270,7 @@ namespace BakeryBite.Controllers
                 return View("ProductOneAdder", viewModel);
             }
         }
+
 
         [HttpPost]
         public IActionResult Edit(ProductViewModel viewModel)

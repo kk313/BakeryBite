@@ -9,11 +9,11 @@
 
 <h2>Список всех товаров</h2>
 <div class="header-bar">
+    <a asp-controller="Control" asp-action="ProductOneAdder" class="btn-primary btn-add">Добавить новый товар</a>
     <form asp-action="@Model.ActionName" method="get" class="search-form">
         <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Поиск товаров..." class="search-input" />
         <button type="submit" class="btn btn-primary">Поиск</button>
     </form>
-    <a asp-controller="Control" asp-action="ProductOneAdder" class="btn btn-primary">Добавить новый товар</a>
 </div>
 
 <div class="products-container">
