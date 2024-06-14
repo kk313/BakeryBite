@@ -12,5 +12,7 @@ namespace BakeryBite.Models
         public string? Avatar { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+        public int StockQuantity { get; set; }
+        public bool IsHidden { get; set; }
     }
 }

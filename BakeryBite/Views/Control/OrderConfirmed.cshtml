@@ -49,7 +49,9 @@
                             string recipientName = string.Empty;
                             if (order.UserId.HasValue && order.User != null)
                             {
-                                recipientName = $"{order.User.Surname} {order.User.Name} {order.User.Patronymic}";
+                                recipientName = !string.IsNullOrWhiteSpace(order.User.Patronymic) && order.User.Patronymic.Trim().Length > 0
+                                ? $"{order.User.Surname} {order.User.Name[0]}. {order.User.Patronymic[0]}."
+                                : $"{order.User.Surname} {order.User.Name}";
                             }
                             else
                             {

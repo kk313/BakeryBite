@@ -16,9 +16,9 @@
         <h1 class="start">@Model.Category.Name</h1>
     </div>
     <div class="grid-item">
-        @if (Model.Products.Any())
+        @if (Model.Products.Any(p => !p.IsHidden))
         {
-            @foreach (var product in Model.Products)
+            @foreach (var product in Model.Products.Where(p => !p.IsHidden))
             {
                 <div class="base">
                     <div class="image">

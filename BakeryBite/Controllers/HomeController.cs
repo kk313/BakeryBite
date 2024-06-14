@@ -103,12 +103,12 @@ namespace BakeryBite.Controllers
             }
 
             var totalItems = _context.Product
-                .Count(p => p.CategoryId == category.Id);
+                .Count(p => p.CategoryId == category.Id && !p.IsHidden);
 
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
             var products = _context.Product
-                .Where(p => p.CategoryId == category.Id)
+                .Where(p => p.CategoryId == category.Id && !p.IsHidden)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -155,7 +155,6 @@ namespace BakeryBite.Controllers
         {
             return HandleFoodCategory("Напитки", page, pageSize, nameof(Food6));
         }
-
 
         public IActionResult Authorize()
         {
@@ -214,10 +213,8 @@ namespace BakeryBite.Controllers
                 ModelState.AddModelError("Login", "Пользователь с таким логином уже существует.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return View("Registration", user);
-            }
+            if (existingEmail != null || existingPhone != null || existingLogin != null) 
+            { return View("Registration", user); }
 
             try
             {

@@ -48,6 +48,12 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="Product.StockQuantity">Количество на складе:</label>
+        <input asp-for="Product.StockQuantity" class="form-control" />
+        <span asp-validation-for="Product.StockQuantity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="Image" class="control-label">Изображение товара:</label>
         <input type="file" id="Image" name="Image" accept="image/*" class="form-control-file" />
     </div>

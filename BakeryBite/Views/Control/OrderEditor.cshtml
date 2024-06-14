@@ -48,21 +48,20 @@
                     <div>
                         <p><strong>Адрес доставки:</strong> @order.Address</p>
                         <p><strong>Номер телефона:</strong> @order.Phone</p>
-                        <p>
-                            <strong>Получатель:</strong>
-                            @{
-                                string recipientName = string.Empty;
-                                if (order.UserId.HasValue && order.User != null)
-                                {
-                                    recipientName = $"{order.User.Surname} {order.User.Name} {order.User.Patronymic}";
-                                }
-                                else
-                                {
-                                    recipientName = order.Name;
-                                }
+                        @{
+                            string recipientName = string.Empty;
+                            if (order.UserId.HasValue && order.User != null)
+                            {
+                                recipientName = !string.IsNullOrWhiteSpace(order.User.Patronymic) && order.User.Patronymic.Trim().Length > 0
+                                ? $"{order.User.Surname} {order.User.Name[0]}. {order.User.Patronymic[0]}."
+                                : $"{order.User.Surname} {order.User.Name}";
                             }
-                            @recipientName
-                        </p>
+                            else
+                            {
+                                recipientName = order.Name;
+                            }
+                        }
+                        <p><strong>Получатель:</strong> @recipientName</p>
                         <p><strong>Подробнее:</strong> <a href="@Url.Action("OrderItems", "Control", new { orderId = order.Id })">Подробнее</a></p>
                     </div>
                 </div>

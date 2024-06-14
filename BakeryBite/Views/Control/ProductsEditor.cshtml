@@ -32,8 +32,16 @@
                     <p>@product.Cost руб.</p>
                 </div>
                 <div class="actions">
-                    <a href="@Url.Action("ProductOneEditor", "Control", new { productId = product.Id })" class="btn btn-primary">Редактировать</a>
+                    <a href="@Url.Action("ProductOneEditor", "Control", new { productId = product.Id })" class="btn-primary">Редактировать</a>
                     <a href="#" onclick="confirmDelete(@product.Id)" class="btn-delete">Удалить</a>
+                    @if (product.IsHidden)
+                    {
+                        <button type="button" class="btn btn-primary btn-show" onclick="toggleVisibility(@product.Id)">Показать</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-primary btn-hide" onclick="toggleVisibility(@product.Id)">Скрыть</button>
+                    }
                 </div>
             </div>
         }
@@ -76,5 +84,19 @@
                 }
             });
         }
+    }
+
+    function toggleVisibility(productId) {
+        $.ajax({
+            url: '@Url.Action("ToggleVisibility", "Control")',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                alert('Произошла ошибка при изменении видимости товара.');
+            }
+        });
     }
 </script>

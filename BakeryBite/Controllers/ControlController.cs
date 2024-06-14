@@ -50,19 +50,31 @@ namespace BakeryBite.Controllers
 
         public IActionResult OrderEditor()
         {
-            List<Order> orders = _context.Order.Where(o => o.IsCompleted == 0).ToList();
+            List<Order> orders = _context.Order
+                .Include(o => o.User)  
+                .Where(o => o.IsCompleted == 0)
+                .ToList();
+
             return View(orders);
         }
 
         public IActionResult OrderConfirmed()
         {
-            List<Order> confirmedOrders = _context.Order.Where(o => o.IsCompleted == 1).ToList();
+            List<Order> confirmedOrders = _context.Order
+                .Include(o => o.User)  
+                .Where(o => o.IsCompleted == 1)
+                .ToList();
+
             return View(confirmedOrders);
         }
 
         public IActionResult OrderRejected()
         {
-            List<Order> rejectedOrders = _context.Order.Where(o => o.IsCompleted == 2).ToList();
+            List<Order> rejectedOrders = _context.Order
+                .Include(o => o.User)  
+                .Where(o => o.IsCompleted == 2)
+                .ToList();
+
             return View(rejectedOrders);
         }
 
@@ -110,6 +122,21 @@ namespace BakeryBite.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult ToggleVisibility(int productId)
+        {
+            var product = _context.Product.FirstOrDefault(p => p.Id == productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.IsHidden = !product.IsHidden;
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         public IActionResult ProductOneEditor(int productId)
@@ -220,8 +247,6 @@ namespace BakeryBite.Controllers
             return View("ProfileEditor", model);
         }
 
-
-
         [HttpPost]
         public IActionResult AddProduct(ProductViewModel viewModel)
         {
@@ -246,7 +271,9 @@ namespace BakeryBite.Controllers
                     Weight = viewModel.Product.Weight,
                     Description = viewModel.Product.Description,
                     Cost = viewModel.Product.Cost,
-                    CategoryId = viewModel.Product.CategoryId 
+                    CategoryId = viewModel.Product.CategoryId,
+                    StockQuantity = 0, 
+                    IsHidden = true 
                 };
 
                 if (viewModel.Image != null && viewModel.Image.Length > 0)
@@ -271,11 +298,10 @@ namespace BakeryBite.Controllers
             }
         }
 
-
         [HttpPost]
         public IActionResult Edit(ProductViewModel viewModel)
         {
-            if (!CheckInput(viewModel))
+            if (!ModelState.IsValid)
             {
                 viewModel.Categories = _context.Category.ToList();
                 return View("ProductOneEditor", viewModel);
@@ -293,6 +319,11 @@ namespace BakeryBite.Controllers
             product.Description = viewModel.Product.Description;
             product.Cost = viewModel.Product.Cost;
             product.CategoryId = viewModel.Product.CategoryId;
+
+            if (viewModel.Product.StockQuantity == 0)
+            {
+                product.IsHidden = true;
+            }
 
             if (viewModel.Image != null && viewModel.Image.Length > 0)
             {
@@ -313,6 +344,7 @@ namespace BakeryBite.Controllers
 
             return RedirectToAction("ProductsEditor");
         }
+
 
         [HttpPost]
         public IActionResult DeleteProduct(int productId)

@@ -133,3 +133,13 @@
         color: #fff;
         border-color: #007bff;
     }
+
+.btn-show {
+    color: green !important;
+    border-color: green !important;
+}
+
+.btn-hide {
+    color: red !important;
+    border-color: red !important;
+}

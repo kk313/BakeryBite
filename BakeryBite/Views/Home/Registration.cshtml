@@ -1,9 +1,10 @@
-﻿@{
+﻿@model BakeryBite.Models.User
+
+@{
     ViewData["Title"] = "Регистрация";
     Layout = "_LayoutSecond";
 }
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/Authorize.css" />
-@model BakeryBite.Models.User
 
 <main>
     <div class="auth-container">
@@ -22,7 +23,7 @@
 
                 <div class="form-group">
                     <label asp-for="Patronymic">Отчество</label>
-                    <input asp-for="Patronymic" class="form-control" placeholder="Введите ваше отчество" required maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Отчество должно содержать только русские буквы и быть не длиннее 32 символов">
+                    <input asp-for="Patronymic" class="form-control" placeholder="Введите ваше отчество (если есть)" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Отчество должно содержать только русские буквы и быть не длиннее  32 символов">
                 </div>
 
                 <div class="form-group">

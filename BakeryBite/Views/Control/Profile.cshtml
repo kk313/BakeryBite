@@ -13,7 +13,15 @@
             <h2>Профиль пользователя</h2>
         </div>
         <div class="user-info">
-            <p><strong>Имя пользователя:</strong> @($"{Model.Surname} {Model.Patronymic[0]}. {Model.Name[0]}.")</p>
+            <p>
+                <strong>Имя пользователя:</strong>
+                @{
+                    string fullName = Model.Patronymic != null && Model.Patronymic.Trim().Length > 0
+                    ? $"{Model.Surname} {Model.Name[0]}. {Model.Patronymic[0]}."
+                    : $"{Model.Surname} {Model.Name}";
+                }
+                @fullName
+            </p>
             <p><strong>Роль пользователя:</strong> @Model.Role.Name</p>
         </div>
         <div class="action-buttons">
