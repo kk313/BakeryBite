@@ -33,7 +33,7 @@
                     <p>@product.Cost руб.</p>
                 </div>
                 <div class="actions">
-                    <a href="@Url.Action("ProductOneEditor", "Control", new { productId = product.Id })" class="btn-primary">Редактировать</a>
+                    <button type="button" class="btn-primary" onclick="editProduct(@product.Id)">Редактировать</button>
                     <button type="button" onclick="confirmDelete(@product.Id)" class="btn-delete">Удалить</button>
                     @if (product.IsHidden)
                     {
@@ -113,8 +113,16 @@
                 window.location.reload();
             },
             error: function (xhr, status, error) {
-                toastr.error('Произошла ошибка при изменении видимости товара.');
+                if (xhr.status === 400) {
+                    toastr.error(xhr.responseText);
+                } else {
+                    toastr.error('Произошла ошибка при изменении видимости товара.');
+                }
             }
         });
+    }
+
+    function editProduct(productId) {
+        window.location.href = '@Url.Action("ProductOneEditor", "Control")' + '?productId=' + productId;
     }
 </script>

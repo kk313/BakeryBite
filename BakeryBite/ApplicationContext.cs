@@ -6,7 +6,8 @@ namespace BakeryBite
 {
     public class ApplicationContext : DbContext
     {
-        private readonly string _connection = "Data Source=DESKTOP-4PAD45N\\SQLEXPRESS;Database=BakeryBite;Integrated Security=sspi;Encrypt=true;TrustServerCertificate=true;";
+        private readonly string _connection = "Data Source=DESKTOP-S1JLV2G\\SQLEXPRESS;Database=BakeryBite;Integrated Security=sspi;Encrypt=true;TrustServerCertificate=true;";
+        //private readonly string _connection = "Data Source=DESKTOP-S1JLV2G\\SQLEXPRESS;Initial Catalog=BakeryBite;Integrated Security=True";
 
         public DbSet<User> User { get; set; }
         public DbSet<Product> Product { get; set; }

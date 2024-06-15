@@ -134,6 +134,11 @@ namespace BakeryBite.Controllers
                 return NotFound();
             }
 
+            if (product.StockQuantity == 0)
+            {
+                return BadRequest("Нельзя изменить видимость товара с нулевым количеством на складе.");
+            }
+
             product.IsHidden = !product.IsHidden;
             _context.SaveChanges();
 
@@ -310,12 +315,6 @@ namespace BakeryBite.Controllers
         [HttpPost]
         public IActionResult Edit(ProductViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                viewModel.Categories = _context.Category.ToList();
-                return View("ProductOneEditor", viewModel);
-            }
-
             var product = _context.Product.FirstOrDefault(p => p.Id == viewModel.Product.Id);
 
             if (product == null)
@@ -328,6 +327,7 @@ namespace BakeryBite.Controllers
             product.Description = viewModel.Product.Description;
             product.Cost = viewModel.Product.Cost;
             product.CategoryId = viewModel.Product.CategoryId;
+            product.StockQuantity = viewModel.Product.StockQuantity;
 
             if (viewModel.Product.StockQuantity == 0)
             {

@@ -316,15 +316,17 @@ namespace BakeryBite.Controllers
             if (ModelState.IsValid)
             {
                 var userId = HttpContext.Session.GetInt32("UserId");
+                int? orderUserId = null;
 
                 if (userId != null)
                 {
                     var user = _context.User.FirstOrDefault(u => u.Id == userId);
 
-                    var userRole = _context.Role.FirstOrDefault(r => r.Id == user.RoleId && r.Id == 4);
+                    var userRole = _context.Role.FirstOrDefault(r => r.Id == user.RoleId);
 
-                    if (userRole != null)
+                    if (userRole != null && userRole.Id != 1)
                     {
+                        orderUserId = userId;
                         model.Name = user.Name;
                         model.Email = user.Email;
                         model.Phone = user.Phone.ToString();
@@ -334,14 +336,14 @@ namespace BakeryBite.Controllers
                 var newOrder = new Order
                 {
                     OrderDate = DateTime.Now,
-                    TotalAmount = CalculateTotalAmount(), 
+                    TotalAmount = CalculateTotalAmount(),
                     IsCompleted = 0,
                     Phone = Convert.ToInt64(model.Phone),
                     Address = model.Address,
                     Name = model.Name,
                     Email = model.Email,
                     PaymentMethod = model.PaymentMethod.ToString(),
-                    UserId = HttpContext.Session.GetInt32("UserId")
+                    UserId = orderUserId
                 };
 
                 _context.Order.Add(newOrder);
@@ -369,6 +371,7 @@ namespace BakeryBite.Controllers
 
             return View("OrderConfirmation", model);
         }
+
 
         [HttpPost]
         public IActionResult ChangeCartItemQuantity(int productId, int change, int newQuantity = -1)
