@@ -5,6 +5,7 @@
 }
 
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodTemplate.css" />
+<link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
 
 <main class="grid-container">
     <div class="grid-item" style="align-items: center">
@@ -66,8 +67,15 @@
     <div class="overlay"></div>
 </div>
 
+<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+
 <script>
-    var activePanels = [];
+    toastr.options = {
+        "positionClass": "toast-bottom-right",
+        "timeOut": "3000",
+        "progressBar": true
+    };
 
     function addToCart(productId, quantity) {
         $.ajax({
@@ -75,50 +83,11 @@
             type: 'POST',
             data: { productId: productId, quantity: quantity },
             success: function () {
-                showFeedbackPanel();
+                toastr.success('Товар успешно добавлен в корзину!', '');
             },
             error: function () {
-                alert('Ошибка при добавлении товара в корзину.');
+                toastr.error('Ошибка при добавлении товара в корзину.');
             }
         });
-
-        function showFeedbackPanel() {
-            var feedbackPanel = document.createElement('div');
-            feedbackPanel.classList.add('feedback-panel');
-
-            var feedbackContent = document.createElement('div');
-            feedbackContent.classList.add('feedback-content');
-            feedbackContent.innerHTML = '<span class="feedback-message">Товар успешно добавлен в корзину!</span>';
-
-            feedbackPanel.appendChild(feedbackContent);
-
-            document.body.appendChild(feedbackPanel);
-
-            activePanels.push(feedbackPanel);
-
-            setTimeout(function () {
-                feedbackPanel.classList.add('active');
-            }, 50);
-
-            setTimeout(function () {
-                feedbackPanel.style.opacity = '0';
-                setTimeout(function () {
-                    feedbackPanel.parentNode.removeChild(feedbackPanel);
-                    activePanels.splice(activePanels.indexOf(feedbackPanel), 1);
-                    updatePanelPositions();
-                }, 300);
-            }, 3000);
-
-            updatePanelPositions();
-        }
-
-        function updatePanelPositions() {
-            var topOffset = 20;
-            for (var i = activePanels.length - 1; i >= 0; i--) {
-                var panel = activePanels[i];
-                panel.style.bottom = topOffset + 'px';
-                topOffset += panel.offsetHeight + 10;
-            }
-        }
     }
 </script>

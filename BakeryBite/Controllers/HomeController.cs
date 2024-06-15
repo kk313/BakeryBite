@@ -189,12 +189,6 @@ namespace BakeryBite.Controllers
         [HttpPost]
         public IActionResult Register(User user)
         {
-            var agreeToPolicy = Request.Form["AgreeToPolicy"].ToString();
-            if (string.IsNullOrEmpty(agreeToPolicy) || agreeToPolicy.ToLower() != "on")
-            {
-                ModelState.AddModelError("AgreeToPolicy", "Вы должны согласиться с политикой конфиденциальности.");
-            }
-
             var existingEmail = _context.User.FirstOrDefault(u => u.Email == user.Email);
             if (existingEmail != null)
             {
@@ -377,7 +371,7 @@ namespace BakeryBite.Controllers
         }
 
         [HttpPost]
-        public IActionResult ChangeCartItemQuantity(int productId, int change)
+        public IActionResult ChangeCartItemQuantity(int productId, int change, int newQuantity = -1)
         {
             ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
 
@@ -385,9 +379,18 @@ namespace BakeryBite.Controllers
 
             if (existingItem != null)
             {
-                existingItem.Quantity += change;
+                if (newQuantity >= 0) 
+                {
+                    existingItem.Quantity = newQuantity;
+                }
+                else 
+                {
+                    existingItem.Quantity += change;
+                }
 
-                if (existingItem.Quantity <= 0)
+                bool isRemoved = existingItem.Quantity <= 0;
+
+                if (isRemoved)
                 {
                     cart.items.Remove(existingItem);
                 }
@@ -396,14 +399,19 @@ namespace BakeryBite.Controllers
 
                 var totalQuantity = cart.items.Sum(item => item.Quantity);
                 var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
-                var itemQuantity = existingItem.Quantity;
 
-                return Json(new { totalQuantity, totalCost, itemQuantity });
+                if (isRemoved)
+                {
+                    return Json(new { totalQuantity, totalCost, itemQuantity = 0, reload = false });
+                }
+                else
+                {
+                    return Json(new { totalQuantity, totalCost, itemQuantity = existingItem.Quantity, reload = false });
+                }
             }
 
             return NotFound();
         }
-
 
         [HttpGet]
         public IActionResult GetCartSummary()

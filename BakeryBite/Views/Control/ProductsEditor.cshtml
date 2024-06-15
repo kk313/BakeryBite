@@ -6,6 +6,7 @@
 }
 
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/FoodEditor.css" />
+<link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
 
 <h2>Список всех товаров</h2>
 <div class="header-bar">
@@ -21,7 +22,7 @@
     {
         @foreach (var product in Model.Products)
         {
-            <div class="product-item">
+            <div class="product-item" id="product-@product.Id">
                 <div class="image">
                     <img class="product-img" src="data:image/png;base64,@product.Avatar" alt="">
                 </div>
@@ -33,7 +34,7 @@
                 </div>
                 <div class="actions">
                     <a href="@Url.Action("ProductOneEditor", "Control", new { productId = product.Id })" class="btn-primary">Редактировать</a>
-                    <a href="#" onclick="confirmDelete(@product.Id)" class="btn-delete">Удалить</a>
+                    <button type="button" onclick="confirmDelete(@product.Id)" class="btn-delete">Удалить</button>
                     @if (product.IsHidden)
                     {
                         <button type="button" class="btn btn-primary btn-show" onclick="toggleVisibility(@product.Id)">Показать</button>
@@ -69,18 +70,35 @@
     }
 </div>
 
+<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+
 <script>
+    toastr.options = {
+        "positionClass": "toast-bottom-right",
+        "timeOut": "3000",
+        "progressBar": true
+    };
+
     function confirmDelete(productId) {
+        console.log("Deleting product with ID:", productId);
         if (confirm('Вы уверены, что хотите удалить этот товар?')) {
             $.ajax({
                 url: '@Url.Action("DeleteProduct", "Control")',
                 type: 'POST',
-                data: { productId: productId },
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: JSON.stringify(productId),
                 success: function (response) {
-                    window.location.reload();
+                    if (response.success) {
+                        $('#product-' + productId).remove();
+                        toastr.success('Товар успешно удален.');
+                    } else {
+                        toastr.error(response.errorMessage || 'Не удалось удалить товар.');
+                    }
                 },
                 error: function (xhr, status, error) {
-                    alert('Произошла ошибка при удалении товара.');
+                    toastr.error('Произошла ошибка при удалении товара.');
                 }
             });
         }
@@ -95,7 +113,7 @@
                 window.location.reload();
             },
             error: function (xhr, status, error) {
-                alert('Произошла ошибка при изменении видимости товара.');
+                toastr.error('Произошла ошибка при изменении видимости товара.');
             }
         });
     }

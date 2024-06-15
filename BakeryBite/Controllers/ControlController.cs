@@ -2,6 +2,7 @@
 using BakeryBite.Models;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 using System.Globalization;
@@ -183,68 +184,76 @@ namespace BakeryBite.Controllers
                 return NotFound();
             }
 
-            return View(user);
+            var viewModel = new UserProfileViewModel
+            {
+                User = user
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult UpdateUser(User model)
+        public IActionResult UpdateUser(UserProfileViewModel model)
         {
-            if (ModelState.IsValid || string.IsNullOrEmpty(model.Password))
-            {
-                var user = _context.User.FirstOrDefault(u => u.Id == model.Id);
+                var user = _context.User.FirstOrDefault(u => u.Email == model.User.Email);
+
                 if (user == null)
                 {
                     return NotFound();
                 }
 
-                if (!string.IsNullOrWhiteSpace(model.Name) && user.Name != model.Name)
+                if (!string.IsNullOrWhiteSpace(model.User.Name) && user.Name != model.User.Name)
                 {
-                    user.Name = model.Name;
+                    user.Name = model.User.Name;
                 }
 
-                if (!string.IsNullOrWhiteSpace(model.Surname) && user.Surname != model.Surname)
+                if (!string.IsNullOrWhiteSpace(model.User.Surname) && user.Surname != model.User.Surname)
                 {
-                    user.Surname = model.Surname;
+                    user.Surname = model.User.Surname;
                 }
 
-                if (!string.IsNullOrWhiteSpace(model.Patronymic) && user.Patronymic != model.Patronymic)
+                if (!string.IsNullOrWhiteSpace(model.User.Patronymic) && user.Patronymic != model.User.Patronymic)
                 {
-                    user.Patronymic = model.Patronymic;
+                    user.Patronymic = model.User.Patronymic;
                 }
+                else { user.Patronymic = null; }
 
-                if (!string.IsNullOrWhiteSpace(model.Email) && user.Email != model.Email)
+                if (!string.IsNullOrWhiteSpace(model.User.Email) && user.Email != model.User.Email)
                 {
-                    var existingUserWithEmail = _context.User.FirstOrDefault(u => u.Email == model.Email);
+                    var existingUserWithEmail = _context.User.FirstOrDefault(u => u.Email == model.User.Email);
                     if (existingUserWithEmail != null && existingUserWithEmail.Id != user.Id)
                     {
-                        ModelState.AddModelError("Email", "Пользователь с таким Email уже существует.");
+                        ModelState.AddModelError("User.Email", "Пользователь с таким Email уже существует.");
                         return View("ProfileEditor", model);
                     }
-                    user.Email = model.Email;
+                    user.Email = model.User.Email;
                 }
 
-                if (!string.IsNullOrWhiteSpace(model.Phone) && user.Phone != model.Phone)
+                if (!string.IsNullOrWhiteSpace(model.User.Phone) && user.Phone != model.User.Phone)
                 {
-                    var existingUserWithPhone = _context.User.FirstOrDefault(u => u.Phone == model.Phone);
+                    var existingUserWithPhone = _context.User.FirstOrDefault(u => u.Phone == model.User.Phone);
                     if (existingUserWithPhone != null && existingUserWithPhone.Id != user.Id)
                     {
-                        ModelState.AddModelError("Phone", "Пользователь с таким номером телефона уже существует.");
+                        ModelState.AddModelError("User.Phone", "Пользователь с таким номером телефона уже существует.");
                         return View("ProfileEditor", model);
                     }
-                    user.Phone = model.Phone;
+                    user.Phone = model.User.Phone;
                 }
 
-                if (model.Password != null)
+                if (!string.IsNullOrWhiteSpace(model.User.Password))
                 {
-                    user.Password = model.Password;
+                    if (string.IsNullOrWhiteSpace(model.OldPassword) || model.OldPassword != user.Password)
+                    {
+                        ModelState.AddModelError("OldPassword", "Текущий пароль неверен.");
+                        return View("ProfileEditor", model);
+                    }
+
+                    user.Password = model.User.Password;
                 }
 
                 _context.SaveChanges();
 
                 return RedirectToAction("Profile", "Control");
-            }
-
-            return View("ProfileEditor", model);
         }
 
         [HttpPost]
@@ -345,46 +354,32 @@ namespace BakeryBite.Controllers
             return RedirectToAction("ProductsEditor");
         }
 
-
         [HttpPost]
-        public IActionResult DeleteProduct(int productId)
+        public IActionResult DeleteProduct([FromBody] int productId)
         {
             var product = _context.Product.FirstOrDefault(p => p.Id == productId);
 
             if (product == null)
             {
-                return NotFound();
+                return Json(new { success = false, errorMessage = "Товар не найден." });
+            }
+
+            var isUsedInOrders = _context.OrderItem.Any(oi => oi.ProductId == productId);
+            if (isUsedInOrders)
+            {
+                return Json(new { success = false, errorMessage = "Невозможно удалить товар, так как он используется в заказах." });
             }
 
             try
             {
-                var isProductInOrders = _context.OrderItem.Any(oi => oi.ProductId == productId);
+                _context.Product.Remove(product);
+                _context.SaveChanges();
 
-                if (isProductInOrders)
-                {
-                    return Json(new { success = false, errorMessage = "Невозможно удалить товар, так как он уже используется в заказах." });
-                }
-
-                using (var transaction = _context.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        _context.Product.Remove(product);
-                        _context.SaveChanges();
-                        transaction.Commit();
-
-                        return Json(new { success = true });
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        return Json(new { success = false, errorMessage = "Ошибка при удалении товара: " + ex.Message });
-                    }
-                }
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, errorMessage = "Ошибка при проверке наличия товара в заказах: " + ex.Message });
+                return Json(new { success = false, errorMessage = "Ошибка при удалении товара: " + ex.Message });
             }
         }
 

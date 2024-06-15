@@ -4,6 +4,8 @@
 }
 @model List<CartItem>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/ShoppingCart.css" />
+<link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
+
 <h1>Корзина покупок</h1>
 
 <div class="grid-container">
@@ -19,9 +21,8 @@
                     <div class="text">
                         <p class="product-name">@item.Product.Name</p>
                         <p class="product-quantity">
-                            Количество: <input type="number" id="quantity-@item.Product.Id" value="@item.Quantity" min="1" data-initial-quantity="@item.Quantity" onchange="changeQuantityManual(@item.Product.Id, this.value)">
+                            Количество: <input type="number" id="quantity-@item.Product.Id" value="@item.Quantity" min="0" data-initial-quantity="@item.Quantity" onchange="changeQuantityManual(@item.Product.Id, this.value)">
                         </p>
-
                     </div>
                     <p class="product-price">Цена: @item.Product.Cost руб.</p>
                     <div class="quantity-buttons">
@@ -50,86 +51,98 @@
     }
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+
+<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+<script src="~/lib/toastr/toastr.min.js"></script>
+
 <script>
+    toastr.options = {
+        "positionClass": "toast-bottom-right",
+        "timeOut": "3000",
+        "progressBar": true
+    };
+
+    function updateCartItemUI(productId, newQuantity, totalQuantity, totalCost) {
+        var quantityElement = $('#quantity-' + productId);
+
+        if (newQuantity > 0) {
+            quantityElement.val(newQuantity);
+        } else {
+            quantityElement.closest('.base').remove();
+        }
+
+        $('#total-quantity').text(totalQuantity);
+        $('#total-cost').text(totalCost);
+    }
+
+    function sendChangeQuantityRequest(productId, change, newQuantity = -1) {
+        $.ajax({
+            url: '/Home/ChangeCartItemQuantity',
+            type: 'POST',
+            data: { productId: productId, change: change, newQuantity: newQuantity },
+            success: function (data) {
+                if (data.reload) {
+                    location.reload();
+                } else {
+                    updateCartItemUI(productId, data.itemQuantity, data.totalQuantity, data.totalCost);
+                    if (data.itemQuantity === 0) {
+                        toastr.success('Товар удалён из корзины!', '', { timeOut: 2000 });
+                    } else {
+                        toastr.success('Количество товара в корзине успешно обновлено!', '', { timeOut: 2000 });
+                    }
+                }
+            },
+            error: function () {
+                toastr.error('Ошибка при изменении количества товара в корзине.');
+            }
+        });
+    }
+
     function changeQuantity(productId, change) {
         var quantityElement = $('#quantity-' + productId);
         var currentQuantity = parseInt(quantityElement.val());
         var newValue = currentQuantity + change;
 
-        if (newValue <= 0 && currentQuantity === 1) {
+        if (newValue < 0) {
+            alert('Количество товара не может быть меньше 0.');
+            return;
+        }
+
+        if (newValue === 0) {
             if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-                return;
-            } else {
-                removeItemFromCart(productId);
                 return;
             }
         }
 
-        quantityElement.val(newValue);
         sendChangeQuantityRequest(productId, change);
     }
 
-
     function changeQuantityManual(productId, value) {
-        var quantityElement = $('#quantity-' + productId);
-        var initialQuantity = parseInt(quantityElement.attr('data-initial-quantity')) || 0; 
         var newValue = parseInt(value);
 
         if (isNaN(newValue) || newValue < 0) {
             alert('Количество должно быть числом больше или равным 0.');
-            quantityElement.val(initialQuantity); 
             return;
         }
 
-        var change = newValue - initialQuantity;
-
-        if (newValue === 0 || newValue <= 0) {
+        if (newValue === 0) {
             if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-                quantityElement.val(initialQuantity); 
-                return;
-            } else {
-                removeItemFromCart(productId);
+                var quantityElement = $('#quantity-' + productId);
+                quantityElement.val(quantityElement.data('initial-quantity'));
                 return;
             }
         }
 
-        quantityElement.attr('data-initial-quantity', newValue);
-
-        sendChangeQuantityRequest(productId, change);
-    }
-
-
-    function sendChangeQuantityRequest(productId, quantity) {
-        $.ajax({
-            url: '/Home/ChangeCartItemQuantity',
-            type: 'POST',
-            data: { productId: productId, change: quantity },
-            success: function (data) {
-                $('#total-quantity').text(data.totalQuantity);
-                $('#total-cost').text(data.totalCost);
-                location.reload();
-            },
-            error: function () {
-                alert('Ошибка при изменении количества товара в корзине.');
-            }
-        });
+        sendChangeQuantityRequest(productId, 0, newValue);
     }
 
     function removeItemFromCart(productId) {
-        $.ajax({
-            url: '/Home/ChangeCartItemQuantity',
-            type: 'POST',
-            data: { productId: productId, change: -999 },
-            success: function (data) {
-                $('#total-quantity').text(data.totalQuantity);
-                $('#total-cost').text(data.totalCost);
-                location.reload();
-            },
-            error: function () {
-                alert('Ошибка при удалении товара из корзины.');
-            }
-        });
-    }
+        if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
+            return;
+        }
 
+        sendChangeQuantityRequest(productId, 0, 0);
+    }
 </script>

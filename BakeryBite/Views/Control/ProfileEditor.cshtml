@@ -1,4 +1,4 @@
-﻿@model BakeryBite.Models.User
+﻿@model BakeryBite.Data.UserProfileViewModel
 
 @{
     ViewData["Title"] = "Редактирование пользователя";
@@ -9,90 +9,52 @@
 <h2>Редактирование пользователя</h2>
 
 <form asp-action="UpdateUser" asp-controller="Control" method="post" id="updateUserForm">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="User.Id" />
 
     <div class="form-group">
-        <label asp-for="Name">Имя:</label>
-        <input asp-for="Name" type="text" class="form-control" placeholder="Введите новое имя" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Имя должно содержать только русские буквы и быть не длиннее 32 символов" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label asp-for="User.Name">Имя:</label>
+        <input asp-for="User.Name" type="text" class="form-control" placeholder="Введите новое имя" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Имя должно содержать только русские буквы и быть не длиннее 32 символов" />
+        <span asp-validation-for="User.Name" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Surname">Фамилия:</label>
-        <input asp-for="Surname" type="text" class="form-control" placeholder="Введите новую фамилию" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Фамилия должна содержать только русские буквы и быть не длиннее 32 символов" />
-        <span asp-validation-for="Surname" class="text-danger"></span>
+        <label asp-for="User.Surname">Фамилия:</label>
+        <input asp-for="User.Surname" type="text" class="form-control" placeholder="Введите новую фамилию" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Фамилия должна содержать только русские буквы и быть не длиннее 32 символов" />
+        <span asp-validation-for="User.Surname" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Patronymic">Отчество:</label>
-        <input asp-for="Patronymic" type="text" class="form-control" placeholder="Введите новое отчество (если есть)" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Отчество должно содержать только русские буквы и быть не длиннее 32 символов" />
-        <span asp-validation-for="Patronymic" class="text-danger"></span>
+        <label asp-for="User.Patronymic">Отчество:</label>
+        <input asp-for="User.Patronymic" type="text" class="form-control" placeholder="Введите новое отчество (если есть)" maxlength="32" pattern="^[а-яА-ЯёЁ]+$" title="Отчество должно содержать только русские буквы и быть не длиннее 32 символов" />
+        <span asp-validation-for="User.Patronymic" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Email">Email:</label>
-        <input asp-for="Email" type="email" class="form-control" placeholder="Введите новую почту" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+        <label asp-for="User.Email">Email:</label>
+        <input asp-for="User.Email" type="email" class="form-control" placeholder="Введите новую почту" />
+        <span asp-validation-for="User.Email" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Phone">Номер телефона:</label>
-        <input asp-for="Phone" type="tel" class="form-control" placeholder="Введите новый номер телефона" pattern="[0-9]{11}" title="Номер телефона должен состоять из 11 цифр" />
-        <span asp-validation-for="Phone" class="text-danger"></span>
+        <label asp-for="User.Phone">Номер телефона:</label>
+        <input asp-for="User.Phone" type="tel" class="form-control" placeholder="Введите новый номер телефона" pattern="[0-9]{11}" title="Номер телефона должен состоять из 11 цифр" />
+        <span asp-validation-for="User.Phone" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Password">Пароль:</label>
-        <input asp-for="Password" type="password" class="form-control" placeholder="Введите новый пароль"
+        <label for="OldPassword">Текущий пароль:</label>
+        <input id="OldPassword" name="OldPassword" type="password" class="form-control" placeholder="Введите текущий пароль для изменения на новый" />
+        <span asp-validation-for="OldPassword" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="User.Password">Новый пароль:</label>
+        <input asp-for="User.Password" type="password" class="form-control" placeholder="Введите новый пароль"
                pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*"
                title="Пароль должен содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ. Минимальная длина - 8 символов."
-               maxlength="32" minlength="8" title="Пароль должен быть не менее 8 символов и содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ" />
-        <span asp-validation-for="Password" class="text-danger"></span>
+               maxlength="32" minlength="8" />
+        <span asp-validation-for="User.Password" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
-
-<script>
-    $(document).ready(function () {
-        $('#updateUserForm').submit(function (e) {
-            e.preventDefault();
-
-            $.ajax({
-                url: '@Url.Action("UpdateUser", "Control")',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function (data) {
-                    showFeedbackPanel("Профиль успешно обновлен!");
-                },
-                error: function () {
-                    alert('Ошибка при обновлении профиля пользователя.');
-                }
-            });
-        });
-
-        function showFeedbackPanel(message) {
-            var feedbackPanel = document.createElement('div');
-            feedbackPanel.classList.add('feedback-panel');
-
-            var feedbackContent = document.createElement('div');
-            feedbackContent.classList.add('feedback-content');
-            feedbackContent.innerHTML = '<span class="feedback-message">' + message + '</span>';
-
-            feedbackPanel.appendChild(feedbackContent);
-
-            document.body.appendChild(feedbackPanel);
-
-            setTimeout(function () {
-                feedbackPanel.classList.add('active');
-            }, 50);
-
-            setTimeout(function () {
-                feedbackPanel.style.opacity = '0';
-                setTimeout(function () {
-                    feedbackPanel.parentNode.removeChild(feedbackPanel);
-                }, 300);
-            }, 3000);
-        }
-    });
-</script>
