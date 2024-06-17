@@ -24,6 +24,7 @@ namespace BakeryBite.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        // Главная страница
         public IActionResult Index()
         {
             var categoryViewModels = new List<CategoryViewModel>();
@@ -66,34 +67,7 @@ namespace BakeryBite.Controllers
             return View(categoryViewModels);
         }
 
-        public int? GetRoleIdByUserId(int userId)
-        {
-            var user = _context.User.FirstOrDefault(u => u.Id == userId);
-
-            if (user != null)
-            {
-                return user.RoleId;
-            }
-
-            return null;
-        }
-
-        private string GetCategoryRuName(string categoryName)
-        {
-            if (categoryName.StartsWith("Food"))
-            {
-                if (int.TryParse(categoryName.Substring(4), out int categoryId))
-                {
-                    var category = _context.Category.FirstOrDefault(c => c.Id == categoryId);
-                    if (category != null)
-                    {
-                        return category.Name;
-                    }
-                }
-            }
-            return categoryName;
-        }
-
+        // Категории товаров
         private IActionResult HandleFoodCategory(string categoryName, int page, int pageSize, string actionName)
         {
             var category = _context.Category.FirstOrDefault(c => c.Name == categoryName);
@@ -156,6 +130,7 @@ namespace BakeryBite.Controllers
             return HandleFoodCategory("Напитки", page, pageSize, nameof(Food6));
         }
 
+        // Авторизация и регстрация
         public IActionResult Authorize()
         {
             if (HttpContext.Session.GetString("UserId") != null)
@@ -225,6 +200,7 @@ namespace BakeryBite.Controllers
             }
         }
 
+        // Корзина
         public IActionResult ShoppingCart()
         {
             ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
@@ -293,6 +269,63 @@ namespace BakeryBite.Controllers
             return NotFound();
         }
 
+        [HttpPost]
+        public IActionResult ChangeCartItemQuantity(int productId, int change, int newQuantity = -1)
+        {
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            CartItem existingItem = cart.items.FirstOrDefault(item => item.ProductId == productId);
+
+            if (existingItem != null)
+            {
+                if (newQuantity >= 0)
+                {
+                    existingItem.Quantity = newQuantity;
+                }
+                else
+                {
+                    existingItem.Quantity += change;
+                }
+
+                bool isRemoved = existingItem.Quantity <= 0;
+
+                if (isRemoved)
+                {
+                    cart.items.Remove(existingItem);
+                }
+
+                ShoppingCartHelper.SaveCart(HttpContext, cart);
+
+                var totalQuantity = cart.items.Sum(item => item.Quantity);
+                var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
+
+                bool cartEmpty = cart.items.Count == 0;
+
+                if (isRemoved)
+                {
+                    return Json(new { totalQuantity, totalCost, itemQuantity = 0, reload = true, cartEmpty });
+                }
+                else
+                {
+                    return Json(new { totalQuantity, totalCost, itemQuantity = existingItem.Quantity, reload = false });
+                }
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet]
+        public IActionResult GetCartSummary()
+        {
+            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
+
+            var totalQuantity = cart.items.Sum(item => item.Quantity);
+            var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
+
+            return Json(new { totalQuantity, totalCost });
+        }
+
+        // Заказы
         public IActionResult OrderConfirmation()
         {
             var model = new OrderConfirmationViewModel();
@@ -372,65 +405,39 @@ namespace BakeryBite.Controllers
             return View("OrderConfirmation", model);
         }
 
-
-        [HttpPost]
-        public IActionResult ChangeCartItemQuantity(int productId, int change, int newQuantity = -1)
-        {
-            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
-
-            CartItem existingItem = cart.items.FirstOrDefault(item => item.ProductId == productId);
-
-            if (existingItem != null)
-            {
-                if (newQuantity >= 0) 
-                {
-                    existingItem.Quantity = newQuantity;
-                }
-                else 
-                {
-                    existingItem.Quantity += change;
-                }
-
-                bool isRemoved = existingItem.Quantity <= 0;
-
-                if (isRemoved)
-                {
-                    cart.items.Remove(existingItem);
-                }
-
-                ShoppingCartHelper.SaveCart(HttpContext, cart);
-
-                var totalQuantity = cart.items.Sum(item => item.Quantity);
-                var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
-
-                if (isRemoved)
-                {
-                    return Json(new { totalQuantity, totalCost, itemQuantity = 0, reload = false });
-                }
-                else
-                {
-                    return Json(new { totalQuantity, totalCost, itemQuantity = existingItem.Quantity, reload = false });
-                }
-            }
-
-            return NotFound();
-        }
-
-        [HttpGet]
-        public IActionResult GetCartSummary()
-        {
-            ShoppingCart cart = ShoppingCartHelper.GetCart(HttpContext);
-
-            var totalQuantity = cart.items.Sum(item => item.Quantity);
-            var totalCost = cart.items.Sum(item => item.Quantity * item.Product.Cost);
-
-            return Json(new { totalQuantity, totalCost });
-        }
-
+        // Утилиты
         private decimal CalculateTotalAmount()
         {
             var cart = ShoppingCartHelper.GetCart(HttpContext);
             return cart.items.Sum(item => item.Quantity * item.Product.Cost);
+        }
+
+        public int? GetRoleIdByUserId(int userId)
+        {
+            var user = _context.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user != null)
+            {
+                return user.RoleId;
+            }
+
+            return null;
+        }
+
+        private string GetCategoryRuName(string categoryName)
+        {
+            if (categoryName.StartsWith("Food"))
+            {
+                if (int.TryParse(categoryName.Substring(4), out int categoryId))
+                {
+                    var category = _context.Category.FirstOrDefault(c => c.Id == categoryId);
+                    if (category != null)
+                    {
+                        return category.Name;
+                    }
+                }
+            }
+            return categoryName;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

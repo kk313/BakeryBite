@@ -60,3 +60,9 @@
 
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

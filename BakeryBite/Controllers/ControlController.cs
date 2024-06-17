@@ -21,6 +21,8 @@ namespace BakeryBite.Controllers
             _context = context;
         }
 
+
+        // Пользовательская часть
         public IActionResult Profile()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
@@ -49,6 +51,94 @@ namespace BakeryBite.Controllers
             return RedirectToAction("Authorize", "Home", emptyModel);
         }
 
+        public IActionResult ProfileEditor()
+        {
+            if (!HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
+            {
+                return NotFound();
+            }
+
+            int userId = (int)HttpContext.Session.GetInt32("UserId");
+
+            var user = _context.User.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new UserProfileViewModel
+            {
+                User = user
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateUser(UserProfileViewModel model)
+        {
+            var user = _context.User.FirstOrDefault(u => u.Email == model.User.Email);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Name) && user.Name != model.User.Name)
+            {
+                user.Name = model.User.Name;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Surname) && user.Surname != model.User.Surname)
+            {
+                user.Surname = model.User.Surname;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Patronymic) && user.Patronymic != model.User.Patronymic)
+            {
+                user.Patronymic = model.User.Patronymic;
+            }
+            else { user.Patronymic = null; }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Email) && user.Email != model.User.Email)
+            {
+                var existingUserWithEmail = _context.User.FirstOrDefault(u => u.Email == model.User.Email);
+                if (existingUserWithEmail != null && existingUserWithEmail.Id != user.Id)
+                {
+                    ModelState.AddModelError("User.Email", "Пользователь с таким Email уже существует.");
+                    return View("ProfileEditor", model);
+                }
+                user.Email = model.User.Email;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Phone) && user.Phone != model.User.Phone)
+            {
+                var existingUserWithPhone = _context.User.FirstOrDefault(u => u.Phone == model.User.Phone);
+                if (existingUserWithPhone != null && existingUserWithPhone.Id != user.Id)
+                {
+                    ModelState.AddModelError("User.Phone", "Пользователь с таким номером телефона уже существует.");
+                    return View("ProfileEditor", model);
+                }
+                user.Phone = model.User.Phone;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.User.Password))
+            {
+                if (string.IsNullOrWhiteSpace(model.OldPassword) || model.OldPassword != user.Password)
+                {
+                    ModelState.AddModelError("OldPassword", "Текущий пароль неверен.");
+                    return View("ProfileEditor", model);
+                }
+
+                user.Password = model.User.Password;
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Profile", "Control");
+        }
+
+        // Заказы
         public IActionResult OrderEditor()
         {
             List<Order> orders = _context.Order
@@ -95,6 +185,59 @@ namespace BakeryBite.Controllers
             return View("UserOrders", userOrders);
         }
 
+        public IActionResult UpdateOrderStatus(int orderId, int status)
+        {
+            var order = _context.Order
+                                .Include(o => o.OrderItems)
+                                .ThenInclude(oi => oi.Product)
+                                .FirstOrDefault(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return Json(new { success = false, message = "Заказ не найден." });
+            }
+
+            if (status == 1)
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    if (item.Product.StockQuantity < item.Quantity)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = $"Недостаточно товара '{item.Product.Name}' на складе. Доступно: {item.Product.StockQuantity}, необходимо: {item.Quantity}."
+                        });
+                    }
+                }
+
+                foreach (var item in order.OrderItems)
+                {
+                    item.Product.StockQuantity -= item.Quantity;
+                }
+            }
+
+            order.IsCompleted = status;
+            _context.SaveChanges();
+
+            string toastrMessage = status == 1 ? "Заказ подтвержден" : "Заказ отклонен";
+            return Json(new { success = true, message = toastrMessage });
+        }
+
+        public string GetOrderStatus(int status)
+        {
+            switch (status)
+            {
+                case 1:
+                    return "Оформлен";
+                case 2:
+                    return "Отклонён";
+                default:
+                    return "Не завершён";
+            }
+        }
+
+        // Товары
         public IActionResult ProductsEditor(string searchTerm = "", int page = 1, int pageSize = 9)
         {
             var products = _context.Product.AsQueryable();
@@ -174,120 +317,39 @@ namespace BakeryBite.Controllers
             return View(viewModel);
         }
 
-        public IActionResult ProfileEditor()
-        {
-            if (!HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
-            {
-                return NotFound();
-            }
-
-            int userId = (int)HttpContext.Session.GetInt32("UserId");
-
-            var user = _context.User.FirstOrDefault(u => u.Id == userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var viewModel = new UserProfileViewModel
-            {
-                User = user
-            };
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public IActionResult UpdateUser(UserProfileViewModel model)
-        {
-                var user = _context.User.FirstOrDefault(u => u.Email == model.User.Email);
-
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                if (!string.IsNullOrWhiteSpace(model.User.Name) && user.Name != model.User.Name)
-                {
-                    user.Name = model.User.Name;
-                }
-
-                if (!string.IsNullOrWhiteSpace(model.User.Surname) && user.Surname != model.User.Surname)
-                {
-                    user.Surname = model.User.Surname;
-                }
-
-                if (!string.IsNullOrWhiteSpace(model.User.Patronymic) && user.Patronymic != model.User.Patronymic)
-                {
-                    user.Patronymic = model.User.Patronymic;
-                }
-                else { user.Patronymic = null; }
-
-                if (!string.IsNullOrWhiteSpace(model.User.Email) && user.Email != model.User.Email)
-                {
-                    var existingUserWithEmail = _context.User.FirstOrDefault(u => u.Email == model.User.Email);
-                    if (existingUserWithEmail != null && existingUserWithEmail.Id != user.Id)
-                    {
-                        ModelState.AddModelError("User.Email", "Пользователь с таким Email уже существует.");
-                        return View("ProfileEditor", model);
-                    }
-                    user.Email = model.User.Email;
-                }
-
-                if (!string.IsNullOrWhiteSpace(model.User.Phone) && user.Phone != model.User.Phone)
-                {
-                    var existingUserWithPhone = _context.User.FirstOrDefault(u => u.Phone == model.User.Phone);
-                    if (existingUserWithPhone != null && existingUserWithPhone.Id != user.Id)
-                    {
-                        ModelState.AddModelError("User.Phone", "Пользователь с таким номером телефона уже существует.");
-                        return View("ProfileEditor", model);
-                    }
-                    user.Phone = model.User.Phone;
-                }
-
-                if (!string.IsNullOrWhiteSpace(model.User.Password))
-                {
-                    if (string.IsNullOrWhiteSpace(model.OldPassword) || model.OldPassword != user.Password)
-                    {
-                        ModelState.AddModelError("OldPassword", "Текущий пароль неверен.");
-                        return View("ProfileEditor", model);
-                    }
-
-                    user.Password = model.User.Password;
-                }
-
-                _context.SaveChanges();
-
-                return RedirectToAction("Profile", "Control");
-        }
-
         [HttpPost]
         public IActionResult AddProduct(ProductViewModel viewModel)
         {
-            if (viewModel.Product.CategoryId == null || viewModel.Product.CategoryId == 0)
+            if (string.IsNullOrWhiteSpace(viewModel.Product.Name))
             {
-                ModelState.AddModelError("Product.CategoryId", "Пожалуйста, выберите категорию.");
-                viewModel.Categories = _context.Category.ToList();
-                return View("ProductOneAdder", viewModel);
+                ModelState.AddModelError("Product.Name", "Название товара не может содержать только пробелы.");
             }
 
-            if (!CheckInput(viewModel))
+            if (string.IsNullOrWhiteSpace(viewModel.Product.Description))
             {
-                viewModel.Categories = _context.Category.ToList();
-                return View("ProductOneAdder", viewModel);
+                ModelState.AddModelError("Product.Description", "Описание товара не может содержать только пробелы.");
             }
+
+            if (viewModel.Product.CategoryId == 0)
+            {
+                ModelState.AddModelError("Product.CategoryId", "Категория товара не может быть пустой.");
+                viewModel.Categories = _context.Category.ToList();
+            }
+
+            if (viewModel.Product.CategoryId == 0 || string.IsNullOrWhiteSpace(viewModel.Product.Description) || string.IsNullOrWhiteSpace(viewModel.Product.Name))
+            { return View("ProductOneAdder", viewModel); }
 
             try
             {
                 var product = new Product
                 {
-                    Name = viewModel.Product.Name,
+                    Name = viewModel.Product.Name.Trim(),
                     Weight = viewModel.Product.Weight,
-                    Description = viewModel.Product.Description,
+                    Description = viewModel.Product.Description.Trim(),
                     Cost = viewModel.Product.Cost,
                     CategoryId = viewModel.Product.CategoryId,
-                    StockQuantity = 0, 
-                    IsHidden = true 
+                    StockQuantity = 0,
+                    IsHidden = true
                 };
 
                 if (viewModel.Image != null && viewModel.Image.Length > 0)
@@ -320,6 +382,22 @@ namespace BakeryBite.Controllers
             if (product == null)
             {
                 return NotFound();
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.Product.Name))
+            {
+                ModelState.AddModelError("Product.Name", "Название товара не может содержать только пробелы.");
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.Product.Description))
+            {
+                ModelState.AddModelError("Product.Description", "Описание товара не может содержать только пробелы.");
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.Product.Description) || string.IsNullOrWhiteSpace(viewModel.Product.Name))
+            {
+                viewModel.Categories = _context.Category.ToList();
+                return View("ProductOneEditor", viewModel); 
             }
 
             product.Name = viewModel.Product.Name;
@@ -383,61 +461,6 @@ namespace BakeryBite.Controllers
             }
         }
 
-
-        [HttpPost("updateorderstatus")]
-        public IActionResult UpdateOrderStatus(int orderId, int status)
-        {
-            var order = _context.Order.FirstOrDefault(o => o.Id == orderId);
-            if (order != null)
-            {
-                order.IsCompleted = status;
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction("OrderEditor");
-        }
-
-        public string GetOrderStatus(int status)
-        {
-            switch (status)
-            {
-                case 1:
-                    return "Оформлен";
-                case 2:
-                    return "Отклонён";
-                default:
-                    return "Не завершён";
-            }
-        }
-
-        private bool CheckInput(ProductViewModel viewModel)
-        {
-            if (string.IsNullOrWhiteSpace(viewModel.Product.Name) ||
-                string.IsNullOrWhiteSpace(viewModel.Product.Description) ||
-                string.IsNullOrWhiteSpace(viewModel.Product.Weight.ToString()) ||
-                string.IsNullOrWhiteSpace(viewModel.Product.Cost.ToString()) ||
-                !Regex.IsMatch(viewModel.Product.Name, "^[а-яА-Яa-zA-Z ]+$") ||
-                !Regex.IsMatch(viewModel.Product.Description, "^[а-яА-Яa-zA-Z ]+$") ||
-                !Regex.IsMatch(viewModel.Product.Weight.ToString(), @"^[0-9]+$") ||
-                !Regex.IsMatch(viewModel.Product.Cost.ToString(), @"^[0-9]+$"))
-            {
-                ModelState.AddModelError(string.Empty, "Пожалуйста, заполните все обязательные поля корректно.");
-                return false;
-            }
-
-            if (viewModel.Product.Name.Length > 32)
-            {
-                ModelState.AddModelError(nameof(viewModel.Product.Name), "Название товара не должно превышать 32 символа.");
-                return false;
-            }
-
-            if (viewModel.Product.Description.Length > 64)
-            {
-                ModelState.AddModelError(nameof(viewModel.Product.Description), "Описание товара не должно превышать 64 символа.");
-                return false;
-            }
-
-            return true;
-        }
+        
     }
 }

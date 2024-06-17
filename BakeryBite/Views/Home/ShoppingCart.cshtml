@@ -54,15 +54,51 @@
 <script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
 <script src="~/lib/toastr/toastr.min.js"></script>
 
-<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
-<script src="~/lib/toastr/toastr.min.js"></script>
-
 <script>
     toastr.options = {
         "positionClass": "toast-bottom-right",
         "timeOut": "3000",
         "progressBar": true
     };
+
+    $(document).ready(function () {
+        var toastrMessage = localStorage.getItem('toastrMessage');
+        var toastrType = localStorage.getItem('toastrType');
+
+        if (toastrMessage) {
+            if (toastrType === 'success') {
+                toastr.success(toastrMessage);
+            } else if (toastrType === 'error') {
+                toastr.error(toastrMessage);
+            }
+            localStorage.removeItem('toastrMessage');
+            localStorage.removeItem('toastrType');
+        }
+    });
+
+    function sendChangeQuantityRequest(productId, change, newQuantity = -1) {
+        $.ajax({
+            url: '/Home/ChangeCartItemQuantity',
+            type: 'POST',
+            data: { productId: productId, change: change, newQuantity: newQuantity },
+            success: function (data) {
+                if (data.reload) {
+                    if (data.cartEmpty) {
+                        localStorage.setItem('toastrMessage', 'Корзина пуста.');
+                        localStorage.setItem('toastrType', 'success');
+                        window.location.href = '/Home/ShoppingCart';
+                    } else {
+                        location.reload();
+                    }
+                } else {
+                    updateCartItemUI(productId, data.itemQuantity, data.totalQuantity, data.totalCost);
+                }
+            },
+            error: function () {
+                toastr.error('Ошибка при изменении количества товара в корзине.');
+            }
+        });
+    }
 
     function updateCartItemUI(productId, newQuantity, totalQuantity, totalCost) {
         var quantityElement = $('#quantity-' + productId);
@@ -75,29 +111,6 @@
 
         $('#total-quantity').text(totalQuantity);
         $('#total-cost').text(totalCost);
-    }
-
-    function sendChangeQuantityRequest(productId, change, newQuantity = -1) {
-        $.ajax({
-            url: '/Home/ChangeCartItemQuantity',
-            type: 'POST',
-            data: { productId: productId, change: change, newQuantity: newQuantity },
-            success: function (data) {
-                if (data.reload) {
-                    location.reload();
-                } else {
-                    updateCartItemUI(productId, data.itemQuantity, data.totalQuantity, data.totalCost);
-                    if (data.itemQuantity === 0) {
-                        toastr.success('Товар удалён из корзины!', '', { timeOut: 2000 });
-                    } else {
-                        toastr.success('Количество товара в корзине успешно обновлено!', '', { timeOut: 2000 });
-                    }
-                }
-            },
-            error: function () {
-                toastr.error('Ошибка при изменении количества товара в корзине.');
-            }
-        });
     }
 
     function changeQuantity(productId, change) {
@@ -136,13 +149,5 @@
         }
 
         sendChangeQuantityRequest(productId, 0, newValue);
-    }
-
-    function removeItemFromCart(productId) {
-        if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-            return;
-        }
-
-        sendChangeQuantityRequest(productId, 0, 0);
     }
 </script>

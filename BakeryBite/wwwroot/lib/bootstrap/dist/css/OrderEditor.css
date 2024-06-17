@@ -15,7 +15,7 @@
 
 .order-item {
     display: grid;
-    grid-template-rows: auto auto auto; /* Три строки */
+    grid-template-rows: auto auto auto;
     gap: 20px;
     background-color: #f9f9f9;
     padding: 20px;
@@ -35,25 +35,22 @@
     margin-bottom: 10px;
 }
 
-/* Стили для первой строки (заголовок) */
 .title-row {
     display: grid;
-    grid-template-columns: 1fr; /* Одна колонка */
+    grid-template-columns: 1fr; 
 }
 
-/* Стили для второй строки (детали) */
 .details-row {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Две колонки */
+    grid-template-columns: 1fr 1fr; 
     gap: 20px;
 }
 
-/* Стили для третьей строки (кнопки) */
 .buttons-row {
     display: grid;
-    grid-template-columns: 1fr; /* Одна колонка */
-    align-items: center; /* Центрирование по вертикали */
-    justify-content: center; /* Центрирование по горизонтали */
+    grid-template-columns: 1fr; 
+    align-items: center; 
+    justify-content: center; 
     margin-top: 10px;
 }
 
