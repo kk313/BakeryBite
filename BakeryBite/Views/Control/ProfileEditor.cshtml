@@ -53,7 +53,6 @@
                pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*"
                title="Пароль должен содержать хотя бы одну маленькую букву, одну большую букву, одну цифру и один специальный символ. Минимальная длина - 8 символов."
                maxlength="32" minlength="8" />
-        <span asp-validation-for="User.Password" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Сохранить</button>

@@ -21,7 +21,9 @@
     <div class="form-group">
         <label asp-for="Product.Weight">Вес товара (г):</label>
         <input asp-for="Product.Weight" class="form-control" value="@Convert.ToInt32(Model.Product.Weight)"
-               placeholder="Введите стоимость товара" required maxlength="9" title="Вес должен содержать только цифры" pattern="^[0-9]+$" />
+               placeholder="Введите вес товара" 
+               required maxlength="7" title="Вес должен содержать только цифры" pattern="^[0-9]+$" 
+               onkeypress="return isNumberKey(event)" />
         <span asp-validation-for="Product.Weight" class="text-danger"></span>
     </div>
 
@@ -35,7 +37,8 @@
     <div class="form-group">
         <label asp-for="Product.Cost">Стоимость товара (руб.):</label>
         <input asp-for="Product.Cost" class="form-control" placeholder="Введите стоимость товара" value="@Model.Product.Cost.ToString("0")"
-               required maxlength="9" title="Вес должен содержать только цифры" pattern="^[0-9]+$">
+               required maxlength="5" title="Вес должен содержать только цифры" pattern="^[0-9]+$"
+               onkeypress="return isNumberKey(event)">
         <span asp-validation-for="Product.Cost" class="text-danger"></span>
     </div>
 
@@ -66,3 +69,13 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<script>
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode === 45) { 
+            return false;
+        }
+        return true;
+    }
+</script>

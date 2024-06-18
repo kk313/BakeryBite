@@ -337,11 +337,25 @@ namespace BakeryBite.Controllers
             if (viewModel.Product.CategoryId == 0)
             {
                 ModelState.AddModelError("Product.CategoryId", "Категория товара не может быть пустой.");
-                viewModel.Categories = _context.Category.ToList();
             }
 
-            if (viewModel.Product.CategoryId == 0 || string.IsNullOrWhiteSpace(viewModel.Product.Description) || string.IsNullOrWhiteSpace(viewModel.Product.Name))
-            { return View("ProductOneAdder", viewModel); }
+            if (viewModel.Product.Weight < 150)
+            {
+                ModelState.AddModelError("Product.Weight", "Вес товара не может быть меньше 150 грамм.");
+            }
+
+            if (viewModel.Product.Cost < 50)
+            {
+                ModelState.AddModelError("Product.Cost", "Стоимость товара не может быть меньше 50 рублей.");
+            }
+
+            if (viewModel.Product.CategoryId == 0 || string.IsNullOrWhiteSpace(viewModel.Product.Description) 
+                || string.IsNullOrWhiteSpace(viewModel.Product.Name) || viewModel.Product.Weight < 150 
+                || viewModel.Product.Cost < 50)
+            {
+                viewModel.Categories = _context.Category.ToList();
+                return View("ProductOneAdder", viewModel); 
+            }
 
             try
             {
@@ -398,10 +412,21 @@ namespace BakeryBite.Controllers
                 ModelState.AddModelError("Product.Description", "Описание товара не может содержать только пробелы.");
             }
 
-            if (string.IsNullOrWhiteSpace(viewModel.Product.Description) || string.IsNullOrWhiteSpace(viewModel.Product.Name))
+            if (viewModel.Product.Weight < 150)
+            {
+                ModelState.AddModelError("Product.Weight", "Вес товара не может быть меньше 150 грамм.");
+            }
+
+            if (viewModel.Product.Cost < 50)
+            {
+                ModelState.AddModelError("Product.Cost", "Стоимость товара не может быть меньше 50 рублей.");
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.Product.Description) || string.IsNullOrWhiteSpace(viewModel.Product.Name) 
+                || viewModel.Product.Weight < 150 || viewModel.Product.Cost < 50)
             {
                 viewModel.Categories = _context.Category.ToList();
-                return View("ProductOneEditor", viewModel); 
+                return View("ProductOneEditor", viewModel);
             }
 
             product.Name = viewModel.Product.Name;

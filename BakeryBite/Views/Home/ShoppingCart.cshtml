@@ -21,13 +21,19 @@
                     <div class="text">
                         <p class="product-name">@item.Product.Name</p>
                         <p class="product-quantity">
-                            Количество: <input type="number" id="quantity-@item.Product.Id" value="@item.Quantity" min="0" data-initial-quantity="@item.Quantity" onchange="changeQuantityManual(@item.Product.Id, this.value)">
+                            Количество: 
+                            <input type="number" id="quantity-@item.Product.Id" value="@item.Quantity" min="0" maxlength="100"
+                            data-initial-quantity="@item.Quantity" onchange="changeQuantityManual(@item.Product.Id, this.value)">
                         </p>
                     </div>
                     <p class="product-price">Цена: @item.Product.Cost руб.</p>
                     <div class="quantity-buttons">
-                        <button type="button" class="add-button" onclick="changeQuantity(@item.Product.Id, 1)">+</button>
-                        <button type="button" class="remove-button" onclick="changeQuantity(@item.Product.Id, -1)">-</button>
+                        <button type="button" class="add-button" onclick="changeQuantity(@item.Product.Id, 1)">
+                            <img src="~/img/Add.svg" alt="Изображение">
+                        </button>
+                        <button type="button" class="remove-button" onclick="changeQuantity(@item.Product.Id, -1)">
+                            <img src="~/img/Remove.svg" alt="Изображение">
+                        </button>
                     </div>
                 </div>
             }
@@ -123,13 +129,18 @@
             return;
         }
 
+        if (newValue > 100) {
+            alert('Максимальное количество товара — 100.');
+            newValue = 100;
+        }
+
         if (newValue === 0) {
             if (!confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-                return;
+                return; 
             }
         }
 
-        sendChangeQuantityRequest(productId, change);
+        sendChangeQuantityRequest(productId, 0, newValue);
     }
 
     function changeQuantityManual(productId, value) {
@@ -138,6 +149,11 @@
         if (isNaN(newValue) || newValue < 0) {
             alert('Количество должно быть числом больше или равным 0.');
             return;
+        }
+
+        if (newValue > 100) {
+            alert('Максимальное количество — 100.');
+            newValue = 100;
         }
 
         if (newValue === 0) {
@@ -150,4 +166,21 @@
 
         sendChangeQuantityRequest(productId, 0, newValue);
     }
+
+    function limitQuantityInput(event) {
+        if (event.target.value < 0) {
+            event.target.value = 0;
+        }
+        if (event.target.value > 100) {
+            event.target.value = 100;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const quantityInputs = document.querySelectorAll('input[type="number"]');
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', limitQuantityInput);
+        });
+    });
 </script>
