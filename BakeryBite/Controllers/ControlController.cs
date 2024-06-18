@@ -214,6 +214,10 @@ namespace BakeryBite.Controllers
                 foreach (var item in order.OrderItems)
                 {
                     item.Product.StockQuantity -= item.Quantity;
+                    if (item.Product.StockQuantity == 0)
+                    {
+                        item.Product.IsHidden = true;
+                    }
                 }
             }
 

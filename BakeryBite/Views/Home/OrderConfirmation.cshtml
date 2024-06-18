@@ -15,8 +15,8 @@
     {
         <div class="form-group">
             <label asp-for="Address">Адрес доставки:</label>
-            <input asp-for="Address" type="text" class="form-control" required />
-            <span asp-validation-for="Address" placeholder="Введите адрес доставки" class="text-danger"></span>
+            <input asp-for="Address" type="text" placeholder="Введите адрес доставки" class="form-control" required />
+            <span asp-validation-for="Address" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="PaymentMethod">Способ оплаты:</label>
@@ -29,7 +29,6 @@
         <input type="hidden" asp-for="Name" value="q" />
         <input type="hidden" asp-for="Email" value="q" />
         <input type="hidden" asp-for="Phone" value="1" />
-
     }
     else
     {
@@ -45,7 +44,7 @@
         </div>
         <div class="form-group">
             <label asp-for="Phone">Номер телефона:</label>
-            <input asp-for="Phone" type="tel" pattern="[0-9]{11}" placeholder="Введите ваш номер телефона" class="form-control" required title="Номер телефона должен состоять из 11 цифр" />
+            <input asp-for="Phone" type="tel" pattern="^7\d{10}$" placeholder="Введите ваш номер телефона" class="form-control" required title="Номер телефона должен начинаться с 7 и состоять из 11 цифр" />
             <span asp-validation-for="Phone" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -64,3 +63,25 @@
     }
     <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const addressInput = form.querySelector("input[name='Address']");
+        const addressErrorSpan = form.querySelector("span[data-valmsg-for='Address']");
+
+        form.addEventListener("submit", function (event) {
+            const addressValue = addressInput.value.trim();
+            if (!addressValue) {
+                event.preventDefault();
+                addressErrorSpan.textContent = "Адрес доставки не может содержать только пробелы.";
+                addressErrorSpan.style.display = "block";
+                addressInput.classList.add("input-validation-error");
+            } else {
+                addressErrorSpan.textContent = "";
+                addressErrorSpan.style.display = "none";
+                addressInput.classList.remove("input-validation-error");
+            }
+        });
+    });
+</script>

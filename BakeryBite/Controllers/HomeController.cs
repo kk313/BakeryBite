@@ -346,63 +346,54 @@ namespace BakeryBite.Controllers
         [HttpPost]
         public IActionResult ConfirmOrder(OrderConfirmationViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var userId = HttpContext.Session.GetInt32("UserId");
-                int? orderUserId = null;
-
                 if (userId != null)
                 {
                     var user = _context.User.FirstOrDefault(u => u.Id == userId);
-
-                    var userRole = _context.Role.FirstOrDefault(r => r.Id == user.RoleId);
-
-                    if (userRole != null && userRole.Id != 1)
+                    if (user != null)
                     {
-                        orderUserId = userId;
-                        model.Name = user.Name;
-                        model.Email = user.Email;
-                        model.Phone = user.Phone.ToString();
+                        model.RoleId = user.RoleId;
                     }
                 }
-
-                var newOrder = new Order
-                {
-                    OrderDate = DateTime.Now,
-                    TotalAmount = CalculateTotalAmount(),
-                    IsCompleted = 0,
-                    Phone = Convert.ToInt64(model.Phone),
-                    Address = model.Address,
-                    Name = model.Name,
-                    Email = model.Email,
-                    PaymentMethod = model.PaymentMethod.ToString(),
-                    UserId = orderUserId
-                };
-
-                _context.Order.Add(newOrder);
-                _context.SaveChanges();
-
-                var cart = ShoppingCartHelper.GetCart(HttpContext);
-                foreach (var cartItem in cart.items)
-                {
-                    var orderItem = new OrderItem
-                    {
-                        OrderId = newOrder.Id,
-                        ProductId = cartItem.ProductId,
-                        Quantity = cartItem.Quantity
-                    };
-                    _context.OrderItem.Add(orderItem);
-                }
-
-                _context.SaveChanges();
-
-                cart.items.Clear();
-                ShoppingCartHelper.SaveCart(HttpContext, cart);
-
-                return RedirectToAction("Index", "Home");
+                return View("OrderConfirmation", model);
             }
 
-            return View("OrderConfirmation", model);
+            var newOrder = new Order
+            {
+                OrderDate = DateTime.Now,
+                TotalAmount = CalculateTotalAmount(),
+                IsCompleted = 0,
+                Phone = Convert.ToInt64(model.Phone),
+                Address = model.Address,
+                Name = model.Name,
+                Email = model.Email,
+                PaymentMethod = model.PaymentMethod.ToString(),
+                UserId = HttpContext.Session.GetInt32("UserId")
+            };
+
+            _context.Order.Add(newOrder);
+            _context.SaveChanges();
+
+            var cart = ShoppingCartHelper.GetCart(HttpContext);
+            foreach (var cartItem in cart.items)
+            {
+                var orderItem = new OrderItem
+                {
+                    OrderId = newOrder.Id,
+                    ProductId = cartItem.ProductId,
+                    Quantity = cartItem.Quantity
+                };
+                _context.OrderItem.Add(orderItem);
+            }
+
+            _context.SaveChanges();
+
+            cart.items.Clear();
+            ShoppingCartHelper.SaveCart(HttpContext, cart);
+
+            return RedirectToAction("Index", "Home");
         }
 
         // Утилиты
