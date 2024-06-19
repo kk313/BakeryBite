@@ -38,6 +38,20 @@
         box-sizing: border-box;
     }
 
+.form-group-policy {
+    margin-top: 20px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+    .checkbox-container input[type="checkbox"] {
+        margin-right: 20px;
+    }
+
 .btn-primary {
     width: 100%;
     padding: 10px;

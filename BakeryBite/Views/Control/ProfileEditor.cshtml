@@ -37,7 +37,7 @@
 
     <div class="form-group">
         <label asp-for="User.Phone">Номер телефона:</label>
-        <input asp-for="User.Phone" type="tel" class="form-control" placeholder="Введите новый номер телефона" pattern="^7\d{10}$" title="Номер телефона должен начинаться с 7 и состоять из 11 цифр" />
+        <input asp-for="User.Phone" type="tel" class="form-control" placeholder="Введите новый номер телефона" maxlength="11" pattern="^7\d{10}$" title="Номер телефона должен начинаться с 7 и состоять из 11 цифр"/>
         <span asp-validation-for="User.Phone" class="text-danger"></span>
     </div>
 

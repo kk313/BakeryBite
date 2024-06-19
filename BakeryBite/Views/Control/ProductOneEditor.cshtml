@@ -52,7 +52,8 @@
 
     <div class="form-group">
         <label asp-for="Product.StockQuantity">Количество на складе:</label>
-        <input asp-for="Product.StockQuantity" class="form-control" />
+        <input asp-for="Product.StockQuantity" class="form-control" required maxlength="5" placeholder="Введите количество товара"
+        title="Кол-во на складе должно содержать только цифры" min="0" pattern="^[0-9]+$ />
         <span asp-validation-for="Product.StockQuantity" class="text-danger"></span>
     </div>
 
